@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BipbopNet", "BipbopNet\BipbopNet.csproj", "{8FA0EF75-0FA5-49FC-BFF1-C956A61180AD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BipbopNet.Tests", "BipbopNet.Tests\BipbopNet.Tests.csproj", "{53E9CC1F-6D9A-43BA-9C9B-FB77EF4CA96E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8FA0EF75-0FA5-49FC-BFF1-C956A61180AD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8FA0EF75-0FA5-49FC-BFF1-C956A61180AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8FA0EF75-0FA5-49FC-BFF1-C956A61180AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8FA0EF75-0FA5-49FC-BFF1-C956A61180AD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{53E9CC1F-6D9A-43BA-9C9B-FB77EF4CA96E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{53E9CC1F-6D9A-43BA-9C9B-FB77EF4CA96E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{53E9CC1F-6D9A-43BA-9C9B-FB77EF4CA96E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{53E9CC1F-6D9A-43BA-9C9B-FB77EF4CA96E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
