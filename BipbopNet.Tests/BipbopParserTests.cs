@@ -93,7 +93,7 @@ namespace BipbopNet.Tests
             Assert.AreEqual(14, dTime.Minute);
             Assert.AreEqual(25, dTime.Second);
         }
-        
+
         [Test]
         public void ExecutionTime()
         {

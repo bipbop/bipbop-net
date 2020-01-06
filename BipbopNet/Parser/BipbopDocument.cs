@@ -8,13 +8,13 @@ namespace BipbopNet.Parser
 {
     public class BipbopDocument
     {
+        private readonly CultureInfo _cultureInfo = new CultureInfo("pt-BR");
+        public readonly XmlDocument Document;
+
         /**
          * Nó principal
          */
         protected readonly XmlNode Root;
-        public readonly XmlDocument Document;
-
-        private readonly CultureInfo _cultureInfo = new CultureInfo("pt-BR");
 
         public BipbopDocument(XmlDocument document)
         {
@@ -72,7 +72,7 @@ namespace BipbopNet.Parser
         {
             get
             {
-                List<string> validRequests = new List<string>();
+                var validRequests = new List<string>();
                 var nodeValidRequests = Root.SelectNodes("./header/validRequest");
                 foreach (XmlNode nodeValidRequest in nodeValidRequests)
                     validRequests.Add(nodeValidRequest.InnerText);
@@ -100,16 +100,20 @@ namespace BipbopNet.Parser
         {
             var code = node.Attributes["code"]?.Value;
 
-            var database = node.Attributes["databaseName"] == null ? null : new Database(
-                node.Attributes["databaseName"]?.Value,
-                node.Attributes["databaseDescription"]?.Value,
-                node.Attributes["databaseUrl"]?.Value);
+            var database = node.Attributes["databaseName"] == null
+                ? null
+                : new Database(
+                    node.Attributes["databaseName"]?.Value,
+                    node.Attributes["databaseDescription"]?.Value,
+                    node.Attributes["databaseUrl"]?.Value);
 
-            var table = node.Attributes["tableName"] == null ? null : new Table(
-                database,
-                node.Attributes["tableName"]?.Value,
-                node.Attributes["tableDescription"]?.Value,
-                node.Attributes["tableUrl"]?.Value);
+            var table = node.Attributes["tableName"] == null
+                ? null
+                : new Table(
+                    database,
+                    node.Attributes["tableName"]?.Value,
+                    node.Attributes["tableDescription"]?.Value,
+                    node.Attributes["tableUrl"]?.Value);
 
             var parserException = new DocumentException(node.InnerText,
                 node.Attributes["push"]?.Value == "true",

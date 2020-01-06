@@ -4,7 +4,8 @@ namespace BipbopNet.Parser
     {
         public readonly Database Database;
 
-        public Table(Database database, string? name, string? description, string? url, string? label = null) : base(name, description, url, label)
+        public Table(Database database, string? name, string? description, string? url, string? label = null) : base(
+            name, description, url, label)
         {
             Database = database;
         }

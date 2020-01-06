@@ -12,10 +12,10 @@ namespace BipbopNet.Push
             Version = version;
         }
 
-        public string FilterTag { get; private set; }
-        public string LastId { get; private set; }
-        public int Skip { get; private set; }
-        public int Limit { get; private set; }
-        public int? Version { get; private set; }
+        public string FilterTag { get; }
+        public string LastId { get; }
+        public int Skip { get; }
+        public int Limit { get; }
+        public int? Version { get; }
     }
 }

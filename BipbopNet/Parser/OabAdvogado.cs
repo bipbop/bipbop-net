@@ -6,6 +6,11 @@ namespace BipbopNet.Parser
     {
         private readonly JToken _adv;
 
+        public OabAdvogado(JToken adv)
+        {
+            _adv = adv;
+        }
+
         public string? Nome => _adv["Nome"]?.ToString();
         public string? Inscricao => _adv["Inscricao"]?.ToString();
         public string? Uf => _adv["Nome"]?.ToString();
@@ -19,10 +24,5 @@ namespace BipbopNet.Parser
         public bool PermiteEnviarEmail => _adv["PermiteEnviarEmail"].ToString() == "True";
         public bool PublicaEndereco => _adv["PublicaEndereco"]?.ToString() == "True";
         public bool PublicaFoto => _adv["PublicaFoto"].ToString() == "True";
-
-        public OabAdvogado(JToken adv)
-        {
-            _adv = adv;
-        }
     }
 }

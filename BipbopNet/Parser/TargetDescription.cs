@@ -5,9 +5,9 @@ namespace BipbopNet.Parser
     public class TargetDescription
     {
         public readonly string? Description;
+        public readonly string? Label;
         public readonly string? Name;
         public readonly Uri? Url;
-        public readonly string? Label;
 
         protected TargetDescription(string? name, string? description, string? url, string? label)
         {

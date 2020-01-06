@@ -7,13 +7,15 @@ namespace BipbopNet.Parser
     {
         public readonly string UnidadeMonetaria = "R$";
         public readonly string Value;
-        public decimal AsDecimal => decimal.Parse(Value, NumberStyles.Currency);
+
         public ValorCausa(XmlNode node)
         {
             var unidade = node.Attributes["unidade_monetaria"]?.Value;
             if (unidade != null) UnidadeMonetaria = unidade;
             Value = node.InnerText;
         }
+
+        public decimal AsDecimal => decimal.Parse(Value, NumberStyles.Currency);
 
         public override string ToString()
         {

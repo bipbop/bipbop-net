@@ -1,9 +1,7 @@
 using System;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Reactive.Disposables;
-using System.Text.RegularExpressions;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -12,17 +10,14 @@ namespace BipbopNet.Push
     public class Listener
     {
         private readonly HttpListener _httpListener;
+        private readonly ManualResetEvent _stopEvent = new ManualResetEvent(false);
         private bool _runServer = true;
-        public event EventHandler<ListenerEvent> OnRequest;
-        private ManualResetEvent _stopEvent = new ManualResetEvent(false);
 
-        public static async Task<string> ServerAddr()
+        public Listener()
         {
-            var envData = Environment.GetEnvironmentVariable("BIPBOP_SERVER");
-            if (envData != null) return envData;
-            var ipRequest = await new HttpClient().GetAsync("http://ipinfo.io/ip");
-            var ipResponse = await ipRequest.Content.ReadAsStringAsync();
-            return $"http://{ipResponse.Trim()}:{Port}/";
+            _httpListener = new HttpListener();
+            _httpListener.Prefixes.Add($"http://*:{Port.ToString()}/");
+            _httpListener.Start();
         }
 
         private static int Port
@@ -37,11 +32,15 @@ namespace BipbopNet.Push
             }
         }
 
-        public Listener()
+        public event EventHandler<ListenerEvent> OnRequest;
+
+        public static async Task<string> ServerAddr()
         {
-            _httpListener = new HttpListener();
-            _httpListener.Prefixes.Add($"http://*:{Port.ToString()}/");
-            _httpListener.Start();
+            var envData = Environment.GetEnvironmentVariable("BIPBOP_SERVER");
+            if (envData != null) return envData;
+            var ipRequest = await new HttpClient().GetAsync("http://ipinfo.io/ip");
+            var ipResponse = await ipRequest.Content.ReadAsStringAsync();
+            return $"http://{ipResponse.Trim()}:{Port}/";
         }
 
         public Task Stop()
@@ -72,13 +71,13 @@ namespace BipbopNet.Push
             try
             {
                 handler?.Invoke(context, new ListenerEvent(context.Request));
-                buffer = System.Text.Encoding.UTF8.GetBytes("OK");
+                buffer = Encoding.UTF8.GetBytes("OK");
             }
             catch (Exception e)
             {
                 response.StatusCode = 500;
                 response.StatusDescription = "Interal Server Error";
-                buffer = System.Text.Encoding.UTF8.GetBytes($"NOK - {e.ToString()}");
+                buffer = Encoding.UTF8.GetBytes($"NOK - {e}");
             }
 
             response.ContentLength64 = buffer.Length;

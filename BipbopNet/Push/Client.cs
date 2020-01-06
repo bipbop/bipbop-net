@@ -9,7 +9,6 @@ namespace BipbopNet.Push
 {
     public class Client
     {
-        
         public readonly BipbopNet.Client BipbopClient;
         public readonly Manager? Manager;
 
@@ -72,7 +71,7 @@ namespace BipbopNet.Push
                 },
                 Machine = selectSingleNode.SelectSingleNode("./machine/node[1]")?.InnerText,
                 Pid = ParseInt(selectSingleNode.SelectSingleNode("./machine/node[2]")?.InnerText),
-                
+
                 Version = ParseInt(selectSingleNode.SelectSingleNode("./version")?.InnerText),
                 Tries = ParseInt(selectSingleNode.SelectSingleNode("./trys")?.InnerText) /* deprecated typo */
                         ?? ParseInt(selectSingleNode.SelectSingleNode("./tries")?.InnerText),
@@ -81,7 +80,7 @@ namespace BipbopNet.Push
                 HasException = selectSingleNode.SelectSingleNode("./hasException")?.InnerText == "true",
                 Locked = selectSingleNode.SelectSingleNode("./locked")?.InnerText != "false",
                 Processing = selectSingleNode.SelectSingleNode("./processing")?.InnerText != "false",
-                Callback = selectSingleNode.SelectSingleNode("./juristekCallback/node")?.InnerText ?? 
+                Callback = selectSingleNode.SelectSingleNode("./juristekCallback/node")?.InnerText ??
                            selectSingleNode.SelectSingleNode("./callback/node")?.InnerText,
                 Exception = null,
                 Created = ParseTime(selectSingleNode.SelectSingleNode("./created")?.InnerText),
@@ -90,7 +89,7 @@ namespace BipbopNet.Push
                 LastRun = ParseTime(selectSingleNode.SelectSingleNode("./lastRun")?.InnerText),
                 LastSuccessRun = ParseTime(selectSingleNode.SelectSingleNode("./lastSuccessRun")?.InnerText),
                 Deleted = ParseTime(selectSingleNode.SelectSingleNode("./deleted")?.InnerText),
-                ExpectedNextJob = ParseTime(selectSingleNode.SelectSingleNode("./expectedNextJob")?.InnerText),
+                ExpectedNextJob = ParseTime(selectSingleNode.SelectSingleNode("./expectedNextJob")?.InnerText)
             };
         }
 
@@ -118,12 +117,13 @@ namespace BipbopNet.Push
                 KeyValuePair.Create("skip", listParameters.Skip.ToString())
             };
             if (listParameters.LastId != null) filter.Add(KeyValuePair.Create("LastId", listParameters.LastId));
-            if (listParameters.Version != null) filter.Add(KeyValuePair.Create("Version", listParameters.Version.ToString()));
+            if (listParameters.Version != null)
+                filter.Add(KeyValuePair.Create("Version", listParameters.Version.ToString()));
             if (listParameters.FilterTag != null) filter.Add(KeyValuePair.Create("tag", listParameters.FilterTag));
-            
-            var doc = await BipbopClient.Request($"SELECT FROM '{Manager}'.'JOB'", filter);
-            return (from XmlNode i in doc.Document.SelectNodes("/BPQL/body/pushObject") select ParsePushObject(i)).ToArray();
 
+            var doc = await BipbopClient.Request($"SELECT FROM '{Manager}'.'JOB'", filter);
+            return (from XmlNode i in doc.Document.SelectNodes("/BPQL/body/pushObject") select ParsePushObject(i))
+                .ToArray();
         }
 
         private static IEnumerable<KeyValuePair<string, string>> KeyValuePairs(PushConfiguration configuration)
@@ -141,10 +141,10 @@ namespace BipbopNet.Push
                 requestParameter.Add(new KeyValuePair<string, string>("pushLabel", configuration.Label));
             if (configuration.At != null)
                 requestParameter.Add(new KeyValuePair<string, string>("pushAt",
-                    ((int) (DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds).ToString()));
+                    ((int) DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds).ToString()));
             if (configuration.Expire != null)
                 requestParameter.Add(new KeyValuePair<string, string>("pushExpire",
-                    ((int) (DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds).ToString()));
+                    ((int) DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds).ToString()));
 
             if (configuration.MaxVersion != null)
                 requestParameter.Add(

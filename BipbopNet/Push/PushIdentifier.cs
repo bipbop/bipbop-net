@@ -10,7 +10,7 @@ namespace BipbopNet.Push
 
     public class PushException : Exception
     {
-        public PushException(string empty): base(empty)
+        public PushException(string empty) : base(empty)
         {
         }
     }

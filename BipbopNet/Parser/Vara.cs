@@ -5,6 +5,7 @@ namespace BipbopNet.Parser
     public class Vara
     {
         private readonly XmlNode _vara;
+
         public Vara(XmlNode vara)
         {
             _vara = vara;
@@ -18,6 +19,5 @@ namespace BipbopNet.Parser
         {
             return _vara.InnerText;
         }
-        
     }
 }

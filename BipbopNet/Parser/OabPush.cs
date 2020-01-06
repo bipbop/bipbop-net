@@ -3,7 +3,7 @@ using Newtonsoft.Json.Linq;
 
 namespace BipbopNet.Parser
 {
-    public class OabPush: PushIdentifier
+    public class OabPush : PushIdentifier
     {
         public OabPush(JToken push)
         {

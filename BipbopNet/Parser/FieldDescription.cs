@@ -6,8 +6,14 @@ namespace BipbopNet.Parser
 {
     public class FieldDescription
     {
-        public readonly TableDescription Table;
         private readonly XmlNode _xmlNode;
+        public readonly TableDescription Table;
+
+        public FieldDescription(TableDescription table, XmlNode xmlNode)
+        {
+            Table = table;
+            _xmlNode = xmlNode;
+        }
 
         public string? Name => _xmlNode.Attributes["name"]?.Value;
         public string? Caption => _xmlNode.Attributes["caption"]?.Value;
@@ -16,15 +22,12 @@ namespace BipbopNet.Parser
         public bool Required => _xmlNode.Attributes["required"]?.Value == "false";
         public bool MainField => _xmlNode.Attributes["mainField"]?.Value == "true";
         public bool Select => _xmlNode.Attributes["name"]?.Value == "true";
-        
-        public string[] AlternativeMask => (from XmlNode i in _xmlNode.SelectNodes("./alternative_mask") select i.InnerText).ToArray();
-        public KeyValuePair<string, string>[] Options => (from XmlNode i in _xmlNode.SelectNodes("./alternative_mask") select 
-            new KeyValuePair<string?,string?>(i.InnerText, i.Attributes["value"]?.Value ?? i.InnerText)).ToArray();
 
-        public FieldDescription(TableDescription table, XmlNode xmlNode)
-        {
-            Table = table;
-            _xmlNode = xmlNode;
-        }
+        public string[] AlternativeMask =>
+            (from XmlNode i in _xmlNode.SelectNodes("./alternative_mask") select i.InnerText).ToArray();
+
+        public IEnumerable<KeyValuePair<string, string>> Options => (from XmlNode i in _xmlNode.SelectNodes("./alternative_mask")
+            select
+                new KeyValuePair<string?, string?>(i.InnerText, i.Attributes["value"]?.Value ?? i.InnerText)).ToArray();
     }
 }

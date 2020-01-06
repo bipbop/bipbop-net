@@ -8,9 +8,9 @@ namespace BipbopNet.Juristek
 {
     public class Query
     {
-        public readonly bool Upload;
-        public readonly Table Table;
         public readonly IEnumerable<KeyValuePair<string, string>> Parameters;
+        public readonly Table Table;
+        public readonly bool Upload;
 
         public Query(Table table, IEnumerable<KeyValuePair<string, string>> parameters = null, bool upload = false)
         {
@@ -30,20 +30,20 @@ namespace BipbopNet.Juristek
         {
             if (processo.Table == null)
                 throw new QueryException("Não há uma tabela configurada no processo solicitado",
-                    push: false,
-                    code: (int)Exception.Codes.MissingArgument);
+                    false,
+                    (int) Exception.Codes.MissingArgument);
             if (string.IsNullOrEmpty(processo.NumeroProcesso))
                 throw new QueryException("Não há um número de processo configurado",
-                    push: false,
-                    code: (int)Exception.Codes.MissingArgument);
+                    false,
+                    (int) Exception.Codes.MissingArgument);
             return new Query(processo.Table,
-                new[] {new KeyValuePair<string, string>("numero_processo", processo.NumeroProcesso),});
+                new[] {new KeyValuePair<string, string>("numero_processo", processo.NumeroProcesso)});
         }
 
         public static Query Cnj(string numeroProcesso)
         {
             return new Query(QueryCnj,
-                new[] {new KeyValuePair<string, string>("numero_processo", numeroProcesso),});
+                new[] {new KeyValuePair<string, string>("numero_processo", numeroProcesso)});
         }
 
         public void Validate()
@@ -53,24 +53,20 @@ namespace BipbopNet.Juristek
             foreach (var field in tableDescription.Fields)
             {
                 var parameter = Parameters?.FirstOrDefault(p =>
-                                    string.Equals(p.Key, field.Name, StringComparison.OrdinalIgnoreCase)) ?? default(KeyValuePair<string, string>);
+                                    string.Equals(p.Key, field.Name, StringComparison.OrdinalIgnoreCase)) ?? default;
                 if (parameter.Equals(default(KeyValuePair<string, string>)))
                 {
                     if (field.Required || field.MainField)
-                    {
                         throw new QueryException($"O parâmetro '{field.Name}' não foi preenchido",
                             code: (int) Exception.Codes.MissingArgument, push: true, @from: Table);
-                    }
 
                     continue;
                 }
 
                 if (field.Select && field.Options.All(p => p.Value != parameter.Value))
-                {
                     throw new QueryException(
-                        message: $"O parâmetro '{field.Name}' não foi preenchido com uma opção válida",
+                        $"O parâmetro '{field.Name}' não foi preenchido com uma opção válida",
                         code: (int) Exception.Codes.InvalidArgument, push: true, @from: Table);
-                }
             }
         }
 
@@ -83,11 +79,11 @@ namespace BipbopNet.Juristek
         {
             var query = Table.SelectString();
             var useParameters = Parameters.ToList()
-                .Concat(new[] {KeyValuePair.Create("UPLOAD", Upload ? "TRUE" : "FALSE"),});
+                .Concat(new[] {KeyValuePair.Create("UPLOAD", Upload ? "TRUE" : "FALSE")});
             var parameters = from parameter in useParameters
                 select $"'{Escape(parameter.Key.ToUpper())}' = '{Escape(parameter.Value)}'";
-            var @join = string.Join(" AND ", parameters);
-            return !Parameters.Any() ? query : $"{query} WHERE {@join}";
+            var join = string.Join(" AND ", parameters);
+            return !Parameters.Any() ? query : $"{query} WHERE {join}";
         }
     }
 }

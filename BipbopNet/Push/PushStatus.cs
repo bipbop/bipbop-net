@@ -1,31 +1,30 @@
 using System;
-using BipbopNet.Parser;
 using Exception = BipbopNet.Parser.Exception;
 
 namespace BipbopNet.Push
 {
     public class PushStatus
     {
-        public PushIdentifier? Push;
-        
-        public int? Version;
-        public int? Tries;
-        public int? Executions;
-        public int? SuccessExecutions;
-        public bool? HasException;
-        public bool? Locked;
-        public bool? Processing;
         public string? Callback;
+        public DateTime? Created;
+        public DateTime? Deleted;
         public Exception? Exception;
-        public string? Machine;
-        public int? Pid;
+        public int? Executions;
+        public DateTime? ExpectedNextJob;
+        public bool? HasException;
+        public DateTime? LastRun;
 
         public DateTime? LastSuccessRun;
-        public DateTime? Created;
+        public bool? Locked;
+        public string? Machine;
         public DateTime? NextJob;
+        public int? Pid;
+        public bool? Processing;
         public DateTime? ProcessingAt;
-        public DateTime? LastRun;
-        public DateTime? Deleted;
-        public DateTime? ExpectedNextJob;
+        public PushIdentifier? Push;
+        public int? SuccessExecutions;
+        public int? Tries;
+
+        public int? Version;
     }
 }

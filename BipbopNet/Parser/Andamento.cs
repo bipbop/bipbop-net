@@ -1,4 +1,3 @@
-using System;
 using System.Xml;
 
 namespace BipbopNet.Parser
@@ -6,10 +5,17 @@ namespace BipbopNet.Parser
     public class Andamento
     {
         private readonly XmlNode _andamento;
+
+        public Andamento(XmlNode andamento)
+        {
+            _andamento = andamento;
+        }
+
         /**
          * Descrição do andamento processual na Justiça
          */
         public string? Descricao => _andamento.SelectSingleNode("./descricao")?.InnerText;
+
         public string? Tipo => _andamento.SelectSingleNode("./tipo")?.InnerText;
         public string? TipoIncidente => _andamento.SelectSingleNode("./tipo_incidente")?.InnerText;
         public string? TipoAndamento => _andamento.SelectSingleNode("./tipo_andamento")?.InnerText;
@@ -18,15 +24,10 @@ namespace BipbopNet.Parser
         public string? CodigoNacional => _andamento.SelectSingleNode("./codigoNacional")?.InnerText;
         public string? Ordenacao => _andamento.SelectSingleNode("./ordenacao")?.InnerText;
         public string? Acao => _andamento.SelectSingleNode("./acao")?.InnerText;
-        
+
         public CourtDate? Data => CourtDate.FromNode(_andamento.SelectSingleNode("./data"));
         public CourtDate? Autuacao => CourtDate.FromNode(_andamento.SelectSingleNode("./autuacao"));
         public CourtDate? Distribuicao => CourtDate.FromNode(_andamento.SelectSingleNode("./distribuicao"));
-
-        public override string ToString()
-        {
-            return $"{this.Data} - {this.Descricao}";
-        }
 
         public Classe? Classe
         {
@@ -43,13 +44,13 @@ namespace BipbopNet.Parser
             {
                 var instancia = _andamento.SelectSingleNode("./instancia")?.InnerText;
                 if (instancia == null) return null;
-                return Int32.Parse(instancia);
+                return int.Parse(instancia);
             }
         }
 
-        public Andamento(XmlNode andamento)
+        public override string ToString()
         {
-            _andamento = andamento;
+            return $"{Data} - {Descricao}";
         }
     }
 }
