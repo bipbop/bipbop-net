@@ -1,4 +1,4 @@
-namespace BipbopNet
+namespace BipbopNet.Parser
 {
     public class NextAppointment
     {

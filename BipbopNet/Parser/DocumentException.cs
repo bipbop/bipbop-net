@@ -1,6 +1,6 @@
-namespace BipbopNet
+namespace BipbopNet.Parser
 {
-    public class BipbopParserException : BipbopException
+    public class DocumentException : Exception
     {
         public readonly int Code;
         public readonly Table? From;
@@ -10,7 +10,7 @@ namespace BipbopNet
         public readonly bool Push;
         public readonly string? Query;
 
-        public BipbopParserException(
+        public DocumentException(
             string message,
             bool push = false,
             int code = (int) Codes.EmptyCode,

@@ -1,9 +1,8 @@
 #nullable enable
-using System;
 
-namespace BipbopNet
+namespace BipbopNet.Parser
 {
-    public class BipbopException: Exception
+    public class Exception: System.Exception
     {
         public enum Codes
         {
@@ -46,7 +45,7 @@ namespace BipbopNet
             BlockedUser= 1526,
         }
 
-        public BipbopException(string message): base(message)
+        public Exception(string message): base(message)
         {
         }
     }

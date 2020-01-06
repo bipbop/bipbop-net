@@ -16,4 +16,8 @@
       <ProjectReference Include="..\BipbopNet\BipbopNet.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Compile Remove="ApiTests.cs" />
+    </ItemGroup>
+
 </Project>

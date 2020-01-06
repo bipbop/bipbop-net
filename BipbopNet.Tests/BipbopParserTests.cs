@@ -1,10 +1,19 @@
 using System;
+using System.Xml;
+using BipbopNet.Parser;
 using NUnit.Framework;
 
 namespace BipbopNet.Tests
 {
-    public class BipbopParserTests : BipbopTestCommon
+    public class BipbopParserTests
     {
+        protected BipbopDocument ParseDocument(string str)
+        {
+            var document = new XmlDocument();
+            document.LoadXml(str);
+            return new BipbopDocument(document);
+        }
+
         [Test]
         public void PushCanBeTrue()
         {
@@ -13,7 +22,7 @@ namespace BipbopNet.Tests
                 ParseDocument(@"<?xml version=""1.0"" encoding=""UTF-8""?>
 <BPQL><header><exception push=""true"" id=""5e05c54462b0742a04124cdd"" code=""0"" source=""CompanyException"">É necessário uma chave de acesso</exception></header><body/></BPQL>");
             }
-            catch (BipbopParserException e)
+            catch (DocumentException e)
             {
                 Assert.IsTrue(e.Push);
             }
@@ -113,7 +122,7 @@ namespace BipbopNet.Tests
     code=""0""
  source=""CompanyException"">É necessário uma chave de acesso</exception></header><body/></BPQL>");
             }
-            catch (BipbopParserException e)
+            catch (DocumentException e)
             {
                 Assert.AreEqual(e.Message, "É necessário uma chave de acesso");
                 Assert.AreEqual(e.Id, "5e05c54462b0742a04124cdd");

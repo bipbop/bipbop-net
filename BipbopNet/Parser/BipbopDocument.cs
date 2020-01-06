@@ -4,31 +4,33 @@ using System.Globalization;
 using System.Linq;
 using System.Xml;
 
-namespace BipbopNet
+namespace BipbopNet.Parser
 {
-    public class BipbopParser
+    public class BipbopDocument
     {
         /**
          * Nó principal
          */
-        protected readonly XmlNode _root;
+        protected readonly XmlNode Root;
+        public readonly XmlDocument Document;
 
-        protected CultureInfo CultureInfo = new CultureInfo("pt-BR");
+        private readonly CultureInfo _cultureInfo = new CultureInfo("pt-BR");
 
-        public BipbopParser(XmlDocument document)
+        public BipbopDocument(XmlDocument document)
         {
-            _root = document.DocumentElement;
+            Document = document;
+            Root = document.DocumentElement;
             AssertException();
         }
 
-        public int? ResourceUse => ReadIntegerAttribute(_root, "resourceUse");
-        public int? SpecialResourceUse => ReadIntegerAttribute(_root, "specialResourceUse");
+        public int? ResourceUse => ReadIntegerAttribute(Root, "resourceUse");
+        public int? SpecialResourceUse => ReadIntegerAttribute(Root, "specialResourceUse");
 
         public int? ExecutionTime
         {
             get
             {
-                var executionTime = _root.SelectSingleNode("./header/execution-time")?.InnerText;
+                var executionTime = Root.SelectSingleNode("./header/execution-time")?.InnerText;
                 return executionTime != null ? int.Parse(executionTime) : 0;
             }
         }
@@ -37,9 +39,9 @@ namespace BipbopNet
         {
             get
             {
-                var dateTime = _root.SelectSingleNode("./header/date-time");
+                var dateTime = Root.SelectSingleNode("./header/date-time");
                 if (dateTime == null) return null;
-                return System.DateTime.Parse(dateTime.InnerText);
+                return System.DateTime.Parse(dateTime.InnerText, _cultureInfo);
             }
         }
 
@@ -48,24 +50,21 @@ namespace BipbopNet
         {
             get
             {
-                var node = _root.SelectSingleNode("./header/nextAppointment");
+                var node = Root.SelectSingleNode("./header/nextAppointment");
                 if (node == null) return null;
                 return new NextAppointment(ReadIntegerAttribute(node, "hour"), ReadIntegerAttribute(node, "minute"));
             }
         }
 
-        public string? Query => _root.SelectSingleNode("./header/query")?.InnerText;
-        public string? Description => _root.SelectSingleNode("./header/description")?.InnerText;
+        public string? Query => Root.SelectSingleNode("./header/query")?.InnerText;
+        public string? Description => Root.SelectSingleNode("./header/description")?.InnerText;
 
-        public BipbopParserException[] Warnings
+        public DocumentException[] Warnings
         {
             get
             {
-                List<BipbopParserException> warnings = new List<BipbopParserException>();
-                var warningNodes = _root.SelectNodes("./header/warning");
-                foreach (XmlNode warningNode in warningNodes) warnings.Add(ParseExceptionNode(warningNode));
-
-                return warnings.ToArray();
+                var warningNodes = Root.SelectNodes("./header/warning");
+                return (from XmlNode warningNode in warningNodes select ParseExceptionNode(warningNode)).ToArray();
             }
         }
 
@@ -74,7 +73,7 @@ namespace BipbopNet
             get
             {
                 List<string> validRequests = new List<string>();
-                var nodeValidRequests = _root.SelectNodes("./header/validRequest");
+                var nodeValidRequests = Root.SelectNodes("./header/validRequest");
                 foreach (XmlNode nodeValidRequest in nodeValidRequests)
                     validRequests.Add(nodeValidRequest.InnerText);
 
@@ -91,29 +90,30 @@ namespace BipbopNet
 
         private void AssertException()
         {
-            var node = _root.SelectSingleNode("./header/exception");
+            if (Root == null) throw new System.Exception("Aparentemente o documento retornou nulo.");
+            var node = Root.SelectSingleNode("./header/exception");
             if (node == null) return;
             throw ParseExceptionNode(node);
         }
 
-        private BipbopParserException ParseExceptionNode(XmlNode node)
+        private DocumentException ParseExceptionNode(XmlNode node)
         {
             var code = node.Attributes["code"]?.Value;
 
-            var database = new Database(
+            var database = node.Attributes["databaseName"] == null ? null : new Database(
                 node.Attributes["databaseName"]?.Value,
                 node.Attributes["databaseDescription"]?.Value,
                 node.Attributes["databaseUrl"]?.Value);
 
-            var table = new Table(
+            var table = node.Attributes["tableName"] == null ? null : new Table(
                 database,
                 node.Attributes["tableName"]?.Value,
                 node.Attributes["tableDescription"]?.Value,
                 node.Attributes["tableUrl"]?.Value);
 
-            var parserException = new BipbopParserException(node.InnerText,
+            var parserException = new DocumentException(node.InnerText,
                 node.Attributes["push"]?.Value == "true",
-                code == null ? (int) BipbopException.Codes.EmptyCode : int.Parse(code),
+                code == null ? (int) Exception.Codes.EmptyCode : int.Parse(code),
                 node.Attributes["source"]?.Value,
                 node.Attributes["id"]?.Value,
                 node.Attributes["log"]?.Value,
