@@ -1,17 +1,15 @@
-using System;
-
 namespace BipbopNet.Push
 {
     public class PushIdentifier
     {
-        public string? Id;
-        public string? Label;
-    }
-
-    public class PushException : Exception
-    {
-        public PushException(string empty) : base(empty)
-        {
-        }
+        /// <summary>
+        /// ID do PUSH
+        /// </summary>
+        public string Id;
+        
+        /// <summary>
+        /// Label do PUSH
+        /// </summary>
+        public string Label;
     }
 }

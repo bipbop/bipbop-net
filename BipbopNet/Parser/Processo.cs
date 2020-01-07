@@ -12,58 +12,185 @@ namespace BipbopNet.Parser
             _processoNode = processoNode;
         }
 
-        public string? Filter => _processoNode.Attributes["filter"]?.Value;
-        public string? Id => _processoNode.Attributes["id"]?.Value;
-        public string? TableInstancia => _processoNode.Attributes["instancia"]?.Value;
-        public string? Origin => _processoNode.Attributes["origin"]?.Value;
-        public string? PushGuid => _processoNode.Attributes["pushguid"]?.Value;
+        /// <summary>
+        /// Filtro do Processo para diferenciar diversa tratativa
+        /// </summary>
+        public string Filter => _processoNode.Attributes?["filter"]?.Value;
+        
+        /// <summary>
+        /// ID único
+        /// </summary>
+        public string Id => _processoNode.Attributes?["id"]?.Value;
+        
+        /// <summary>
+        /// Instância do Portal
+        /// </summary>
+        public string TableInstancia => _processoNode.Attributes?["instancia"]?.Value;
+        
+        /// <summary>
+        /// Tipo do Portal de Origem
+        /// </summary>
+        public string Origin => _processoNode.Attributes?["origin"]?.Value;
+        
+        /// <summary>
+        /// ID único do PUSh
+        /// </summary>
+        public string PushGuid => _processoNode.Attributes?["pushguid"]?.Value;
 
+        /// <summary>
+        /// Matérias do Processo
+        /// </summary>
         public string[] Assunto =>
             (from XmlNode node in _processoNode.SelectNodes("assunto") select node.InnerText).ToArray();
 
+        /// <summary>
+        /// Outros números para o processo
+        /// </summary>
         public string[] OutrosNumeros =>
             (from XmlNode node in _processoNode.SelectNodes("outros_numeros") select node.InnerText).ToArray();
 
+        /// <summary>
+        /// Número antigo do processo
+        /// </summary>
         public string[] NumeroAntigo =>
             (from XmlNode node in _processoNode.SelectNodes("numero_antigo") select node.InnerText).ToArray();
 
+        /// <summary>
+        /// Andamentos
+        /// </summary>
         public Andamento[] Andamentos => (from XmlNode node in _processoNode.SelectNodes("./andamentos/andamento")
             select new Andamento(node)).ToArray();
 
+        /// <summary>
+        /// Documentos (presentes também em andamentos)
+        /// </summary>
         public Andamento[] Documentos => (from XmlNode node in _processoNode.SelectNodes("./documentos/documento")
             select new Andamento(node)).ToArray();
 
+        /// <summary>
+        /// Participantes do Processo
+        /// </summary>
         public Parte[] Partes =>
             (from XmlNode node in _processoNode.SelectNodes("./partes/parte") select new Parte(node)).ToArray();
 
+        /// <summary>
+        /// Advogados do Processo
+        /// </summary>
         public Advogado[] Advogados =>
             (from XmlNode node in _processoNode.SelectNodes("./advogados/advogado") select new Advogado(node))
             .ToArray();
 
+        /// <summary>
+        /// Tags do Processo
+        /// </summary>
         public Tag[] Tags =>
             (from XmlNode node in _processoNode.SelectNodes("./tags/tag") select new Tag(node)).ToArray();
 
-        public string? Acao => _processoNode.SelectSingleNode("./acao")?.InnerText;
-        public string? Area => _processoNode.SelectSingleNode("./area")?.InnerText;
-        public string? NumeroProcesso => _processoNode.SelectSingleNode("./numero_processo")?.InnerText;
-        public string? Descricao => _processoNode.SelectSingleNode("./descricao")?.InnerText;
-        public string? Cartorio => _processoNode.SelectSingleNode("./cartorio")?.InnerText;
-        public string? Comarca => _processoNode.SelectSingleNode("./comarca")?.InnerText;
-        public string? CodigoInterno => _processoNode.SelectSingleNode("./codigo_interno")?.InnerText;
-        public string? Custas => _processoNode.SelectSingleNode("./custas")?.InnerText;
-        public string? Fase => _processoNode.SelectSingleNode("./fase")?.InnerText;
-        public string? Incidente => _processoNode.SelectSingleNode("./incidente")?.InnerText;
-        public string? Julgador => _processoNode.SelectSingleNode("./julgador")?.InnerText;
-        public string? Localizacao => _processoNode.SelectSingleNode("./localizacao")?.InnerText;
-        public string? Observacao => _processoNode.SelectSingleNode("./observacao")?.InnerText;
-        public string? OrigemProcesso => _processoNode.SelectSingleNode("./origem_processo")?.InnerText;
-        public string? OrigemTribunal => _processoNode.SelectSingleNode("./origem_tribunal")?.InnerText;
-        public string? Prioridade => _processoNode.SelectSingleNode("./prioridade")?.InnerText;
-        public string? Situacao => _processoNode.SelectSingleNode("./situacao")?.InnerText;
-        public string? Rito => _processoNode.SelectSingleNode("./rito")?.InnerText;
-        public string? Solucao => _processoNode.SelectSingleNode("./solucao")?.InnerText;
-        public string? Status => _processoNode.SelectSingleNode("./status")?.InnerText;
-        public string? UrlProcesso => _processoNode.SelectSingleNode("./url_processo")?.InnerText;
+        /// <summary>
+        /// Tipo de Ação do Processo
+        /// </summary>
+        public string Acao => _processoNode.SelectSingleNode("./acao")?.InnerText;
+
+        /// <summary>
+        /// Âmbito/ramo do direito
+        /// </summary>
+        public string Area => _processoNode.SelectSingleNode("./area")?.InnerText;
+
+        /// <summary>
+        /// Identificador do Processo
+        /// </summary>
+        public string NumeroProcesso => _processoNode.SelectSingleNode("./numero_processo")?.InnerText;
+
+        /// <summary>
+        /// Descrição do Processo
+        /// </summary>
+        public string Descricao => _processoNode.SelectSingleNode("./descricao")?.InnerText;
+
+        /// <summary>
+        /// Cartório do Processo
+        /// </summary>
+        public string Cartorio => _processoNode.SelectSingleNode("./cartorio")?.InnerText;
+        /// <summary>
+        /// Corresponde ao território em que o juiz de primeiro grau irá exercer sua jurisdição e pode abranger um ou mais municípios
+        /// </summary>
+        public string Comarca => _processoNode.SelectSingleNode("./comarca")?.InnerText;
+        
+        /// <summary>
+        /// Código Interno do Sistema do Tribunal
+        /// </summary>
+        public string CodigoInterno => _processoNode.SelectSingleNode("./codigo_interno")?.InnerText;
+        
+        /// <summary>
+        /// Custas Processuais
+        /// </summary>
+        public ValorCausa Custas => ValorCausa.Factory(_processoNode.SelectSingleNode("./custas"));
+        
+        /// <summary>
+        /// Fase: momento processual. Existem duas essenciais de conhecimento (fase decisória) e de execução (cumprimento de sentença).
+        /// </summary>
+        public string Fase => _processoNode.SelectSingleNode("./fase")?.InnerText;
+        
+        /// <summary>
+        /// Incidente processual é uma questão controversa secundária e acessória que surge no curso de um processo e que precisa ser julgada antes da decisão do mérito da causa principal.
+        /// </summary>
+        public Orgao Orgao => Orgao.Factory(_processoNode.SelectSingleNode("./orgao"));
+        
+        /// <summary>
+        /// Incidente processual é uma questão controversa secundária e acessória que surge no curso de um processo e que precisa ser julgada antes da decisão do mérito da causa principal.
+        /// </summary>
+        public string Incidente => _processoNode.SelectSingleNode("./incidente")?.InnerText;
+
+        /// <summary>
+        /// Julgador, juiz ou desembargador
+        /// </summary>
+        public Julgador Julgador => Parser.Julgador.Factory(_processoNode.SelectSingleNode("./julgador"));
+        
+        /// <summary>
+        /// Localização Física do Processo
+        /// </summary>
+        public string Localizacao => _processoNode.SelectSingleNode("./localizacao")?.InnerText;
+        
+        /// <summary>
+        /// Observação do Processo
+        /// </summary>
+        public string Observacao => _processoNode.SelectSingleNode("./observacao")?.InnerText;
+        
+        /// <summary>
+        /// Apenso do Processo
+        /// </summary>
+        public string Apenso => _processoNode.SelectSingleNode("./apenso")?.InnerText;
+        
+        /// <summary>
+        /// Origem
+        /// </summary>
+        public string OrigemProcesso => _processoNode.SelectSingleNode("./origem_processo")?.InnerText;
+        
+        /// <summary>
+        /// Origem do Processo
+        /// </summary>
+        public string OrigemTribunal => _processoNode.SelectSingleNode("./origem_tribunal")?.InnerText;
+        /// <summary>
+        /// Tipo de Prioridade
+        /// </summary>
+        public string Prioridade => _processoNode.SelectSingleNode("./prioridade")?.InnerText;
+        /// <summary>
+        /// Situação do Processo
+        /// </summary>
+        public string Situacao => _processoNode.SelectSingleNode("./situacao")?.InnerText;
+        /// <summary>
+        /// Rito
+        /// </summary>
+        public string Rito => _processoNode.SelectSingleNode("./rito")?.InnerText;
+        
+        /// <summary>
+        /// Solução
+        /// </summary>
+        public string Solucao => _processoNode.SelectSingleNode("./solucao")?.InnerText;
+        
+        /// <summary>
+        /// URL do Processo
+        /// </summary>
+        public string UrlProcesso => _processoNode.SelectSingleNode("./url_processo")?.InnerText;
 
         public CourtDate Autuacao => CourtDate.FromNode(_processoNode.SelectSingleNode("autuacao"));
         public CourtDate Distribuicao => CourtDate.FromNode(_processoNode.SelectSingleNode("autuacao"));
@@ -75,14 +202,14 @@ namespace BipbopNet.Parser
             get
             {
                 var database = new Database(
-                    _processoNode.Attributes["databaseName"]?.Value,
-                    _processoNode.Attributes["databaseDescription"]?.Value,
-                    _processoNode.Attributes["databaseUrl"]?.Value);
+                    _processoNode.Attributes?["databaseName"]?.Value,
+                    _processoNode.Attributes?["databaseDescription"]?.Value,
+                    _processoNode.Attributes?["databaseUrl"]?.Value);
 
                 return new Table(database,
-                    _processoNode.Attributes["tableName"]?.Value,
-                    _processoNode.Attributes["tableDescription"]?.Value,
-                    _processoNode.Attributes["tableUrl"]?.Value);
+                    _processoNode.Attributes?["tableName"]?.Value,
+                    _processoNode.Attributes?["tableDescription"]?.Value,
+                    _processoNode.Attributes?["tableUrl"]?.Value);
             }
         }
 
@@ -107,7 +234,7 @@ namespace BipbopNet.Parser
         }
 
 
-        public Classe? Classe
+        public Classe Classe
         {
             get
             {
@@ -116,16 +243,9 @@ namespace BipbopNet.Parser
             }
         }
 
-        public ValorCausa? ValorCausa
-        {
-            get
-            {
-                var valorCausa = _processoNode.SelectSingleNode("./valor_causa");
-                return valorCausa == null ? null : new ValorCausa(valorCausa);
-            }
-        }
+        public ValorCausa ValorCausa => Parser.ValorCausa.Factory( _processoNode.SelectSingleNode("./valor_causa"));
 
-        public Vara? Vara
+        public Vara Vara
         {
             get
             {

@@ -9,15 +9,50 @@ namespace BipbopNet.Push
 {
     public class ListenerEvent : EventArgs
     {
-        public readonly string? ApiKey;
-        public readonly string? Company;
-        public readonly BipbopDocument? Document;
+        /// <summary>
+        /// Chave de API do Dono do Documento
+        /// </summary>
+        public readonly string ApiKey;
+
+        /// <summary>
+        /// Dono do Documento
+        /// </summary>
+        public readonly string Company;
+
+        /// <summary>
+        /// Documento
+        /// </summary>
+        public readonly BipbopDocument Document;
+
+        /// <summary>
+        /// Se há exceção no documento
+        /// </summary>
         public readonly bool Exception;
-        public readonly string? MemoryId;
-        public readonly Exception? ParserException;
-        public readonly PushIdentifier? Push;
+
+        /// <summary>
+        /// Memória do Trabalho
+        /// </summary>
+        public readonly string MemoryId;
+        
+        /// <summary>
+        /// Exceção do Documento
+        /// </summary>
+        public readonly Exception ParserException;
+        
+        /// <summary>
+        /// Identificador do PUSH
+        /// </summary>
+        public readonly PushIdentifier Push;
+        
+        /// <summary>
+        /// Versão do Documento
+        /// </summary>
         public readonly int? Version;
 
+        /// <summary>
+        /// Recebe um Evento
+        /// </summary>
+        /// <param name="request">Requisição</param>
         public ListenerEvent(HttpListenerRequest request)
         {
             Push = new PushIdentifier
@@ -45,11 +80,11 @@ namespace BipbopNet.Push
             }
         }
 
-        private static string? GetRequestPostData(HttpListenerRequest request)
+        private static string GetRequestPostData(HttpListenerRequest request)
         {
             if (!request.HasEntityBody) return null;
-            using var body = request.InputStream;
-            using var reader = new StreamReader(body, request.ContentEncoding);
+            var body = request.InputStream;
+            var reader = new StreamReader(body, request.ContentEncoding);
             return reader.ReadToEnd();
         }
     }

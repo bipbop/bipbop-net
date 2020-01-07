@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Threading.Tasks;
 using BipbopNet.Parser;
 using BipbopNet.Push;
@@ -9,6 +10,9 @@ namespace BipbopNet.Juristek
 {
     public class Client
     {
+        /// <summary>
+        /// Estados Válidos do País
+        /// </summary>
         public enum Estado
         {
             [Description("Acre")] AC,
@@ -40,11 +44,21 @@ namespace BipbopNet.Juristek
             [Description("Tocantins")] TO
         }
 
-
         private readonly Lazy<Task<Info>> _lazyDescription;
         private readonly Lazy<Push.Client> _lazyPushClient;
+        
+        /// <summary>
+        /// Cliente BIPBOP
+        /// </summary>
         public readonly BipbopNet.Client BipbopClient;
 
+        /// <summary>
+        /// Inicia Cliente Juristek
+        /// </summary>
+        /// <code>
+        /// var JuristekClient = new Juristek.Client(new Client());
+        /// </code>
+        /// <param name="bipbopClient">Cliente BIPBOP</param>
         public Client(BipbopNet.Client bipbopClient)
         {
             BipbopClient = bipbopClient;
@@ -52,32 +66,58 @@ namespace BipbopNet.Juristek
             _lazyDescription = new Lazy<Task<Info>>(RequestDescription);
         }
 
+        /// <summary>
+        /// Cliente de PUSH configurado para Juristek
+        /// </summary>
         public Push.Client Push => _lazyPushClient.Value;
+        
+        /// <summary>
+        /// Consultas disponíveis no modelo Jurídico
+        /// </summary>
         public Task<Info> Description => _lazyDescription.Value;
 
-        public async Task<OabConsulta> OABProcesso(string numeroOab, Uri pushCallback, Estado? userEstado = null,
-            TipoInscricao? tipoInscricao = null)
+        /// <summary>
+        /// Consulta de Processo OAB
+        /// </summary>
+        /// <param name="numeroOab">
+        /// Número da OAB completo
+        /// <example>12345-PE</example>
+        /// </param>
+        /// <param name="pushCallback">Callback da Requisição</param>
+        /// <param name="userEstado">Estado da Pesquisa</param>
+        /// <param name="tipoInscricao">Tipo de Inscrição</param>
+        /// <returns></returns>
+        public async Task<OabConsulta> OabProcesso(string numeroOab, Uri pushCallback, Estado? userEstado = null,
+            TipoInscricao tipoInscricao = null)
         {
             return new OabConsulta(await BipbopClient.JRequest("SELECT FROM 'OABPROCESSO'.'CONSULTA'", new[]
             {
-                KeyValuePair.Create("numero_oab", numeroOab),
-                KeyValuePair.Create("pushCallback", pushCallback.ToString()),
-                KeyValuePair.Create("estado", userEstado == null ? null : userEstado.ToString()),
-                KeyValuePair.Create("tipoInscricao",
+                new KeyValuePair<string, string>("numero_oab", numeroOab),
+                new KeyValuePair<string, string>("pushCallback", pushCallback.ToString()),
+                new KeyValuePair<string, string>("estado", userEstado == null ? null : userEstado.ToString()),
+                new KeyValuePair<string, string>("tipoInscricao",
                     tipoInscricao == null ? TipoInscricao.Advogado.ToString() : tipoInscricao.ToString())
             }));
         }
 
-        public PushConfiguration CreatePushConfiguration(Query query, PushConfiguration? userConfiguration = null)
+        /// <summary>
+        /// Configuração de PUSH específica da Juristek
+        /// </summary>
+        /// <param name="query">Consulta</param>
+        /// <param name="userConfiguration">Configuração</param>
+        /// <returns>Configuração do PUSH</returns>
+        public static PushConfiguration CreatePushConfiguration(Query query, PushConfiguration userConfiguration = null)
         {
             var configuration = userConfiguration == null
                 ? new PushConfiguration()
                 : (PushConfiguration) userConfiguration.Clone();
-            configuration.Parameters ??= new List<KeyValuePair<string, string>>();
+            configuration.Parameters = configuration.Parameters ?? new List<KeyValuePair<string, string>>();
             configuration.Query = "SELECT FROM 'JURISTEK'.'PUSH'";
-            configuration.Parameters.Add(KeyValuePair.Create("data", query.ToString()));
+            var keyValuePairs = configuration.Parameters?.ToList() ?? new List<KeyValuePair<string, string>>();
+            keyValuePairs.Add(new KeyValuePair<string, string>("data", query.ToString()));
             if (configuration.Callback != null)
-                configuration.Parameters.Add(KeyValuePair.Create("juristekCallback", configuration.Callback));
+                keyValuePairs.Add(new KeyValuePair<string, string>("juristekCallback",
+                    configuration.Callback));
             return configuration;
         }
 
@@ -92,6 +132,11 @@ namespace BipbopNet.Juristek
             return new Info(description.Document);
         }
 
+        /// <summary>
+        /// Executa uma requisição realtime na Juristek (não recomendado)
+        /// </summary>
+        /// <param name="query">Consulta</param>
+        /// <returns>Documento BIPBOP</returns>
         public async Task<BipbopDocument> Request(Query query)
         {
             return await BipbopClient.Request("SELECT FROM 'JURISTEK'.'REALTIME'", new[]

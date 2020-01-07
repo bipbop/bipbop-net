@@ -1,3 +1,4 @@
+using System;
 using System.Xml;
 
 namespace BipbopNet.Parser
@@ -6,14 +7,30 @@ namespace BipbopNet.Parser
     {
         private readonly XmlNode _vara;
 
-        public Vara(XmlNode vara)
+        public Vara(XmlNode orgao)
         {
-            _vara = vara;
+            _vara = orgao ?? throw new ArgumentNullException(nameof(orgao));
         }
 
-        public string? Codigo => _vara.Attributes["codigo"]?.Value;
-        public string? Sigla => _vara.Attributes["sigla"]?.Value;
-        public string Value => _vara.InnerText;
+        public static Vara Factory(XmlNode node)
+        {
+            return node == null ? null : new Vara(node);
+        }
+        
+        /// <summary>
+        /// Código da Vara
+        /// </summary>
+        public string Codigo => _vara.Attributes?["codigo"]?.Value;
+        
+        /// <summary>
+        /// Sigla da Vara
+        /// </summary>
+        public string Sigla => _vara.Attributes?["sigla"]?.Value;
+        
+        /// <summary>
+        /// Nome da Vara
+        /// </summary>
+        public string Name => _vara.InnerText;
 
         public override string ToString()
         {

@@ -1,21 +1,30 @@
 namespace BipbopNet.Push
 {
-    public class ListParameters
+    public class ListParameters: PushIdentifier
     {
-        public ListParameters(string filterTag = null, string lastId = null, int skip = 0, int limit = 10,
-            int? version = null)
-        {
-            FilterTag = filterTag;
-            LastId = lastId;
-            Skip = skip;
-            Limit = limit;
-            Version = version;
-        }
-
-        public string FilterTag { get; }
-        public string LastId { get; }
-        public int Skip { get; }
-        public int Limit { get; }
-        public int? Version { get; }
+        /// <summary>
+        /// Recebe apenas PUSH com a TAG
+        /// </summary>
+        public string Tag;
+        
+        /// <summary>
+        /// PUSH com ID maior que
+        /// </summary>
+        public string LastId;
+        
+        /// <summary>
+        /// Pula X resultados
+        /// </summary>
+        public int Skip = 0;
+        
+        /// <summary>
+        /// Quantidade Máxima de Resultados
+        /// </summary>
+        public int Limit = 10;
+        
+        /// <summary>
+        /// Número da versão desejada
+        /// </summary>
+        public int? Version;
     }
 }

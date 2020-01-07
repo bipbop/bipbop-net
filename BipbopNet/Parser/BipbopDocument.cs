@@ -16,6 +16,10 @@ namespace BipbopNet.Parser
          */
         protected readonly XmlNode Root;
 
+        /// <summary>
+        /// Documento BIPBOP
+        /// </summary>
+        /// <param name="document">XML recebido</param>
         public BipbopDocument(XmlDocument document)
         {
             Document = document;
@@ -23,9 +27,19 @@ namespace BipbopNet.Parser
             AssertException();
         }
 
+        /// <summary>
+        /// Quantidade de Recursos (CPUs), utilizadas
+        /// </summary>
         public int? ResourceUse => ReadIntegerAttribute(Root, "resourceUse");
+        
+        /// <summary>
+        /// Quantidade de Recursos Especiais (GPUs e CPUs Segunda Geração)
+        /// </summary>
         public int? SpecialResourceUse => ReadIntegerAttribute(Root, "specialResourceUse");
 
+        /// <summary>
+        /// Tempo de Execução no Backend
+        /// </summary>
         public int? ExecutionTime
         {
             get
@@ -35,6 +49,9 @@ namespace BipbopNet.Parser
             }
         }
 
+        /// <summary>
+        /// Data e Hora do Documento
+        /// </summary>
         public DateTime? DateTime
         {
             get
@@ -46,7 +63,10 @@ namespace BipbopNet.Parser
         }
 
 
-        public NextAppointment? NextAppointment
+        /// <summary>
+        /// Próximo Apontamento
+        /// </summary>
+        public NextAppointment NextAppointment
         {
             get
             {
@@ -56,9 +76,19 @@ namespace BipbopNet.Parser
             }
         }
 
-        public string? Query => Root.SelectSingleNode("./header/query")?.InnerText;
-        public string? Description => Root.SelectSingleNode("./header/description")?.InnerText;
+        /// <summary>
+        /// Consulta
+        /// </summary>
+        public string Query => Root.SelectSingleNode("./header/query")?.InnerText;
+        
+        /// <summary>
+        /// Descrição da Consulta
+        /// </summary>
+        public string Description => Root.SelectSingleNode("./header/description")?.InnerText;
 
+        /// <summary>
+        /// Alertas que ocorreram durante o processamento
+        /// </summary>
         public DocumentException[] Warnings
         {
             get
@@ -68,29 +98,31 @@ namespace BipbopNet.Parser
             }
         }
 
+        /// <summary>
+        /// Chamadas válidas (para o caso de rotear em diversas chamadas)
+        /// </summary>
         public string[] ValidRequests
         {
             get
             {
                 var validRequests = new List<string>();
                 var nodeValidRequests = Root.SelectNodes("./header/validRequest");
-                foreach (XmlNode nodeValidRequest in nodeValidRequests)
-                    validRequests.Add(nodeValidRequest.InnerText);
-
+                if (nodeValidRequests != null)
+                    validRequests.AddRange(from XmlNode nodeValidRequest in nodeValidRequests
+                        select nodeValidRequest.InnerText);
                 return validRequests.ToArray();
             }
         }
 
         protected static int? ReadIntegerAttribute(XmlNode node, string attr, int? defaultValue = 0)
         {
-            var str = node.Attributes[attr]?.Value;
-            if (str == null) return defaultValue;
-            return int.Parse(str);
+            var str = node.Attributes?[attr]?.Value;
+            return str == null ? defaultValue : int.Parse(str);
         }
 
         private void AssertException()
         {
-            if (Root == null) throw new System.Exception("Aparentemente o documento retornou nulo.");
+            if (Root == null) throw new Exception("O documento não retornou.");
             var node = Root.SelectSingleNode("./header/exception");
             if (node == null) return;
             throw ParseExceptionNode(node);
@@ -98,31 +130,31 @@ namespace BipbopNet.Parser
 
         private DocumentException ParseExceptionNode(XmlNode node)
         {
-            var code = node.Attributes["code"]?.Value;
+            var code = node.Attributes?["code"]?.Value;
 
-            var database = node.Attributes["databaseName"] == null
+            var database = node.Attributes?["databaseName"] == null
                 ? null
                 : new Database(
-                    node.Attributes["databaseName"]?.Value,
-                    node.Attributes["databaseDescription"]?.Value,
-                    node.Attributes["databaseUrl"]?.Value);
+                    node.Attributes?["databaseName"]?.Value,
+                    node.Attributes?["databaseDescription"]?.Value,
+                    node.Attributes?["databaseUrl"]?.Value);
 
-            var table = node.Attributes["tableName"] == null
+            var table = node.Attributes?["tableName"] == null
                 ? null
                 : new Table(
                     database,
-                    node.Attributes["tableName"]?.Value,
-                    node.Attributes["tableDescription"]?.Value,
-                    node.Attributes["tableUrl"]?.Value);
+                    node.Attributes?["tableName"]?.Value,
+                    node.Attributes?["tableDescription"]?.Value,
+                    node.Attributes?["tableUrl"]?.Value);
 
             var parserException = new DocumentException(node.InnerText,
-                node.Attributes["push"]?.Value == "true",
+                node.Attributes?["push"]?.Value == "true",
                 code == null ? (int) Exception.Codes.EmptyCode : int.Parse(code),
-                node.Attributes["source"]?.Value,
-                node.Attributes["id"]?.Value,
-                node.Attributes["log"]?.Value,
+                node.Attributes?["source"]?.Value,
+                node.Attributes?["id"]?.Value,
+                node.Attributes?["log"]?.Value,
                 table,
-                node.Attributes["query"]?.Value);
+                node.Attributes?["query"]?.Value);
 
             return parserException;
         }

@@ -1,35 +1,81 @@
+using System;
 using System.Xml;
 
 namespace BipbopNet.Parser
 {
+    /// <summary>
+    /// Andamento do Processo
+    /// </summary>
     public class Andamento
     {
         private readonly XmlNode _andamento;
 
         public Andamento(XmlNode andamento)
         {
-            _andamento = andamento;
+            _andamento = andamento ?? throw new ArgumentNullException(nameof(andamento));
         }
 
-        /**
-         * Descrição do andamento processual na Justiça
-         */
-        public string? Descricao => _andamento.SelectSingleNode("./descricao")?.InnerText;
+        /// <summary>
+        /// Descrição do andamento processual na Justiça
+        /// </summary>
+        public string Descricao => _andamento.SelectSingleNode("./descricao")?.InnerText;
 
-        public string? Tipo => _andamento.SelectSingleNode("./tipo")?.InnerText;
-        public string? TipoIncidente => _andamento.SelectSingleNode("./tipo_incidente")?.InnerText;
-        public string? TipoAndamento => _andamento.SelectSingleNode("./tipo_andamento")?.InnerText;
-        public string? UrlDocumento => _andamento.SelectSingleNode("./url_documento")?.InnerText;
-        public string? NumeroAndamento => _andamento.SelectSingleNode("./numero_andamento")?.InnerText;
-        public string? CodigoNacional => _andamento.SelectSingleNode("./codigoNacional")?.InnerText;
-        public string? Ordenacao => _andamento.SelectSingleNode("./ordenacao")?.InnerText;
-        public string? Acao => _andamento.SelectSingleNode("./acao")?.InnerText;
+        /// <summary>
+        /// Tipo, poucos portais preenchem a informação
+        /// </summary>
+        public string Tipo => _andamento.SelectSingleNode("./tipo")?.InnerText;
 
-        public CourtDate? Data => CourtDate.FromNode(_andamento.SelectSingleNode("./data"));
-        public CourtDate? Autuacao => CourtDate.FromNode(_andamento.SelectSingleNode("./autuacao"));
-        public CourtDate? Distribuicao => CourtDate.FromNode(_andamento.SelectSingleNode("./distribuicao"));
+        /// <summary>
+        /// Tipo do incidente, poucos portais preenchem a informação
+        /// </summary>
+        public string TipoIncidente => _andamento.SelectSingleNode("./tipo_incidente")?.InnerText;
 
-        public Classe? Classe
+        /// <summary>
+        /// Tipo do andamento, poucos portais preenchem a informação
+        /// </summary>
+        public string TipoAndamento => _andamento.SelectSingleNode("./tipo_andamento")?.InnerText;
+
+        /// <summary>
+        /// URL do documento anexo ao andamento
+        /// </summary>
+        public string UrlDocumento => _andamento.SelectSingleNode("./url_documento")?.InnerText;
+
+        /// <summary>
+        /// Número do Andamento
+        /// </summary>
+        public string NumeroAndamento => _andamento.SelectSingleNode("./numero_andamento")?.InnerText;
+
+        /// <summary>
+        /// Código Nacional
+        /// </summary>
+        public string CodigoNacional => _andamento.SelectSingleNode("./codigoNacional")?.InnerText;
+
+        /// <summary>
+        /// Ordenação
+        /// </summary>
+        public string Ordenacao => _andamento.SelectSingleNode("./ordenacao")?.InnerText;
+
+        /// <summary>
+        /// Ação
+        /// </summary>
+        public string Acao => _andamento.SelectSingleNode("./acao")?.InnerText;
+
+        /// <summary>
+        /// Data do Andamento
+        /// </summary>
+        public CourtDate Data => CourtDate.FromNode(_andamento.SelectSingleNode("./data"));
+
+        /// <summary>
+        /// Data da Autuação
+        /// </summary>
+        public CourtDate Autuacao => CourtDate.FromNode(_andamento.SelectSingleNode("./autuacao"));
+
+        /// <summary>
+        /// Data da Distribuição do Andamento
+        /// </summary>
+        public CourtDate Distribuicao => CourtDate.FromNode(_andamento.SelectSingleNode("./distribuicao"));
+
+        public Classe Classe
         {
             get
             {

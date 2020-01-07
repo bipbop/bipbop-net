@@ -1,5 +1,8 @@
 namespace BipbopNet.Push
 {
+    /// <summary>
+    /// Gerenciador de PUSH
+    /// </summary>
     public class Manager
     {
         public readonly string Value;
@@ -9,8 +12,19 @@ namespace BipbopNet.Push
             Value = value;
         }
 
+        /// <summary>
+        /// Processos de Baixo Custo
+        /// </summary>
         public static Manager JuristekLowTenancy => new Manager("PUSHJURISTEKLOWTENANCY");
+        
+        /// <summary>
+        /// Processos Jurídicos
+        /// </summary>
         public static Manager Juristek => new Manager("PUSHJURISTEK");
+
+        /// <summary>
+        /// Documentos Diversos
+        /// </summary>
         public static Manager Default => new Manager("PUSH");
 
 

@@ -6,6 +6,10 @@
     <e p="$USER_HOME$/.nuget/packages/microsoft.net.test.sdk/16.2.0/build/netcoreapp1.0" t="Include">
       <e p="Microsoft.NET.Test.Sdk.Program.cs" t="Include" />
     </e>
+    <e p="$USER_HOME$/.nuget/packages/nunit3testadapter/3.15.1/build/net35/NUnit3.TestAdapter.dll" t="Include" />
+    <e p="$USER_HOME$/.nuget/packages/nunit3testadapter/3.15.1/build/net35/NUnit3.TestAdapter.pdb" t="Include" />
+    <e p="$USER_HOME$/.nuget/packages/nunit3testadapter/3.15.1/build/net35/nunit.engine.api.dll" t="Include" />
+    <e p="$USER_HOME$/.nuget/packages/nunit3testadapter/3.15.1/build/net35/nunit.engine.dll" t="Include" />
     <e p="$USER_HOME$/.nuget/packages/nunit3testadapter/3.15.1/build/netcoreapp2.0/NUnit3.TestAdapter.dll" t="Include" />
     <e p="$USER_HOME$/.nuget/packages/nunit3testadapter/3.15.1/build/netcoreapp2.0/NUnit3.TestAdapter.pdb" t="Include" />
     <e p="$USER_HOME$/.nuget/packages/nunit3testadapter/3.15.1/build/netcoreapp2.0/nunit.engine.api.dll" t="Include" />
@@ -32,10 +36,12 @@
           <e p="Exception.cs" t="Include" />
           <e p="FieldDescription.cs" t="Include" />
           <e p="Info.cs" t="Include" />
+          <e p="Julgador.cs" t="Include" />
           <e p="NextAppointment.cs" t="Include" />
           <e p="OabAdvogado.cs" t="Include" />
           <e p="OabConsulta.cs" t="Include" />
           <e p="OabPush.cs" t="Include" />
+          <e p="Orgao.cs" t="Include" />
           <e p="Parte.cs" t="Include" />
           <e p="Processo.cs" t="Include" />
           <e p="Processos.cs" t="Include" />
@@ -56,12 +62,11 @@
           <e p="PushIdentifier.cs" t="Include" />
           <e p="PushStatus.cs" t="Include" />
         </e>
-        <e p="Subkey.cs" t="Include" />
         <e p="WebSocket.cs" t="Include" />
         <e p="bin" t="ExcludeRecursive" />
         <e p="obj" t="ExcludeRecursive">
           <e p="Debug" t="Include">
-            <e p="netcoreapp3.1" t="Include">
+            <e p="netstandard2.0" t="Include">
               <e p="BipbopNet.AssemblyInfo.cs" t="Include" />
             </e>
           </e>
@@ -70,11 +75,15 @@
       <e p="BipbopNet.Tests" t="IncludeRecursive">
         <e p="BipbopNet.Tests.csproj" t="IncludeRecursive" />
         <e p="BipbopParserTests.cs" t="Include" />
+        <e p="BipbopTests.cs" t="Include" />
         <e p="JuristekTests.cs" t="Include" />
         <e p="bin" t="ExcludeRecursive" />
         <e p="obj" t="ExcludeRecursive">
           <e p="Debug" t="Include">
             <e p="netcoreapp3.1" t="Include">
+              <e p="BipbopNet.Tests.AssemblyInfo.cs" t="Include" />
+            </e>
+            <e p="netstandard2.0" t="Include">
               <e p="BipbopNet.Tests.AssemblyInfo.cs" t="Include" />
             </e>
           </e>

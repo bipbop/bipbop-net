@@ -11,42 +11,121 @@ using Websocket.Client;
 
 namespace BipbopNet
 {
+    /// <summary>
+    /// Hook via WebSocket da BIPBOP
+    /// </summary>
     public class WebSocket
     {
         private const string DefaultUrl = "wss://irql.bipbop.com.br/ws";
 
-        public readonly WebsocketClient Client;
+        private readonly WebsocketClient _client;
+
+        /// <summary>
+        /// Cliente da API BIPBOP
+        /// </summary>
         public readonly Client WebServiceClient;
 
-        public WebSocket(Client client)
+        /// <summary>
+        /// Endpoint do WebSocket
+        /// </summary>
+        public readonly Uri Endpoint;
+
+        /// <summary>
+        /// Timeout para haver reconexão
+        /// </summary>
+        public readonly int Timeout;
+
+        private event EventHandler OnStop;
+
+
+        ~WebSocket()
+        {
+            _client.Stop(WebSocketCloseStatus.NormalClosure, "");
+        }
+        
+        /// <summary>
+        /// Hook via WebSocket, reconexão automática
+        /// </summary>
+        /// <code>
+        /// var client = new Client();
+        /// var webSocket = new WebSocket(client);
+        /// await webSocket.Start();
+        /// await webSocket.Stop();
+        /// </code>
+        /// <param name="client">Objeto do WebService</param>
+        /// <param name="endpoint">Endereço Alternativo</param>
+        /// <param name="timeout">Timeout para Reconexão</param>
+        public WebSocket(Client client, Uri endpoint = null, int? timeout = null)
         {
             WebServiceClient = client;
-            var timeout = Environment.GetEnvironmentVariable("BIPBOP_WEBSOCKET_RECONNECT") ?? "30";
-            var url = Environment.GetEnvironmentVariable("BIPBOP_WEBSOCKET") ?? DefaultUrl;
-            var uri = new Uri(url);
-            Client = new WebsocketClient(uri,
+            var timeoutStr = Environment.GetEnvironmentVariable("BIPBOP_WEBSOCKET_RECONNECT") ?? "30";
+            Timeout = timeout ?? int.Parse(timeoutStr);
+            Endpoint = endpoint ?? new Uri(Environment.GetEnvironmentVariable("BIPBOP_WEBSOCKET") ?? DefaultUrl);
+            _client = new WebsocketClient(Endpoint,
                 () => new ClientWebSocket {Options = {Proxy = client.Proxy}})
             {
-                ReconnectTimeout = TimeSpan.FromSeconds(int.Parse(timeout))
+                ReconnectTimeout = TimeSpan.FromSeconds(Timeout)
             };
+            _client.ReconnectionHappened.Subscribe(info =>
+                _client.Send(JsonConvert.SerializeObject(WebServiceClient.ApiKey)));
         }
 
+        /// <summary>
+        /// Para a conexão
+        /// </summary>
+        /// <returns>Tarefa de Parar</returns>
+        public async Task Stop()
+        {
+            OnStop?.Invoke(null, null);
+            await _client.Stop((WebSocketCloseStatus) 0, null);
+        }
+        
+        /// <summary>
+        /// Inicia a conexão
+        /// </summary>
+        /// <returns>Tarefa de Iniciar Conexão</returns>
         public async Task Start()
         {
-            await Client.Start();
-            Client.ReconnectionHappened.Subscribe(info =>
-                Client.Send(JsonConvert.SerializeObject(WebServiceClient.ApiKey)));
-            await Client.SendInstant(JsonConvert.SerializeObject(WebServiceClient.ApiKey));
+            await _client.Start();
+            await _client.SendInstant(JsonConvert.SerializeObject(WebServiceClient.ApiKey));
         }
 
 
-        public async Task<BipbopDocument?> WaitPush(PushIdentifier? pushIdentifier)
+        /// <summary>
+        /// Aguarda um PUSH ser concluído.
+        /// </summary>
+        /// <param name="pushIdentifier"></param>
+        /// <param name="timeout">Tempo máximo de execução no sistema</param>
+        /// <returns>Documento BIPBOP</returns>
+        public Task<BipbopDocument> WaitPush(PushIdentifier pushIdentifier, int timeout = 0)
+        {
+            return Task.Run(() => WaitPushSync(pushIdentifier, timeout));
+        }
+
+        /// <summary>
+        /// Aguarda por um processo
+        /// </summary>
+        /// <param name="pushIdentifier">Push</param>
+        /// <param name="timeout">ms que irá esperar</param>
+        /// <returns>Documento</returns>
+        public BipbopDocument WaitPushSync(PushIdentifier pushIdentifier, int timeout)
         {
             if (pushIdentifier == null) return null;
-            var stopEvent = new ManualResetEvent(false);
+            var exitEvent = new ManualResetEvent(false);
             var document = new XmlDocument();
-            var messageSubscription = Client.MessageReceived.Subscribe(info =>
+
+            void StopEvent(object sender, EventArgs args) => exitEvent.Set();
+
+            OnStop += StopEvent;
+
+            if (timeout > 0)
             {
+                Task.Delay(timeout).ContinueWith((timeoutTask) => exitEvent.Set());
+            }
+
+            var messageSubscription = _client.MessageReceived.Subscribe(info =>
+            {
+                OnStop -= StopEvent;
                 var method = JObject.Parse(info.Text);
                 if (method["method"]?.ToString() != "pushUpdate") return;
                 if (pushIdentifier.Label != null &&
@@ -55,10 +134,12 @@ namespace BipbopNet
                     method["data"]?["pushObject"]?["_id"]?.ToString() != pushIdentifier.Id) return;
                 if (method["data"]?["document"]?["data"] == null) return;
                 document.LoadXml(method["data"]?["document"]?["data"]?.ToString());
-                stopEvent.Set();
+                exitEvent.Set();
             });
 
-            stopEvent.WaitOne();
+
+            exitEvent.WaitOne();
+            OnStop -= StopEvent;
             messageSubscription.Dispose();
             return new BipbopDocument(document);
         }

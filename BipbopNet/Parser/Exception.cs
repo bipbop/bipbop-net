@@ -1,5 +1,3 @@
-#nullable enable
-
 namespace BipbopNet.Parser
 {
     public class Exception : System.Exception
