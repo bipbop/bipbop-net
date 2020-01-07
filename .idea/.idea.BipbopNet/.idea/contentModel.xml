@@ -29,14 +29,18 @@
           <e p="Andamento.cs" t="Include" />
           <e p="BipbopDocument.cs" t="Include" />
           <e p="Classe.cs" t="Include" />
+          <e p="Comarca.cs" t="Include" />
           <e p="CourtDate.cs" t="Include" />
           <e p="Database.cs" t="Include" />
           <e p="DatabaseDescription.cs" t="Include" />
           <e p="DocumentException.cs" t="Include" />
+          <e p="Estatisticas.cs" t="Include" />
           <e p="Exception.cs" t="Include" />
           <e p="FieldDescription.cs" t="Include" />
+          <e p="Foro.cs" t="Include" />
           <e p="Info.cs" t="Include" />
           <e p="Julgador.cs" t="Include" />
+          <e p="Natureza.cs" t="Include" />
           <e p="NextAppointment.cs" t="Include" />
           <e p="OabAdvogado.cs" t="Include" />
           <e p="OabConsulta.cs" t="Include" />
@@ -49,6 +53,7 @@
           <e p="TableDescription.cs" t="Include" />
           <e p="Tag.cs" t="Include" />
           <e p="TargetDescription.cs" t="Include" />
+          <e p="UltimaCarga.cs" t="Include" />
           <e p="ValorCausa.cs" t="Include" />
           <e p="Vara.cs" t="Include" />
         </e>

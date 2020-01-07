@@ -41,19 +41,19 @@ namespace BipbopNet.Parser
         /// Matérias do Processo
         /// </summary>
         public string[] Assunto =>
-            (from XmlNode node in _processoNode.SelectNodes("assunto") select node.InnerText).ToArray();
+            (from XmlNode node in _processoNode.SelectNodes("./assunto") select node.InnerText).ToArray();
 
         /// <summary>
         /// Outros números para o processo
         /// </summary>
         public string[] OutrosNumeros =>
-            (from XmlNode node in _processoNode.SelectNodes("outros_numeros") select node.InnerText).ToArray();
+            (from XmlNode node in _processoNode.SelectNodes("./outros_numeros") select node.InnerText).ToArray();
 
         /// <summary>
         /// Número antigo do processo
         /// </summary>
         public string[] NumeroAntigo =>
-            (from XmlNode node in _processoNode.SelectNodes("numero_antigo") select node.InnerText).ToArray();
+            (from XmlNode node in _processoNode.SelectNodes("./numero_antigo") select node.InnerText).ToArray();
 
         /// <summary>
         /// Andamentos
@@ -102,9 +102,41 @@ namespace BipbopNet.Parser
         public string NumeroProcesso => _processoNode.SelectSingleNode("./numero_processo")?.InnerText;
 
         /// <summary>
+        /// Identificador Protocolar do Processo
+        /// </summary>
+        public string NumeroProtocolo => _processoNode.SelectSingleNode("./numero_protocolo")?.InnerText;
+        
+        /// <summary>
+        /// Identificador Protocolar do Processo (NPU)
+        /// Por convenção, será setado em número unico do processo
+        /// qualquer número do processo que não esteja no formato número único do processo (NPU) definido pelo CNJ em 2015
+        /// </summary>
+        public string NumeroUnico => _processoNode.SelectSingleNode("./numero_unico")?.InnerText;
+        
+        /// <summary>
+        /// Número complemento
+        /// </summary>
+        public string NumeroComplemento => _processoNode.SelectSingleNode("./numero_complemento")?.InnerText;
+        
+        /// <summary>
+        /// Número do Recurso
+        /// </summary>
+        public string NumeroRecurso => _processoNode.SelectSingleNode("./numero_recurso")?.InnerText;        
+        
+        /// <summary>
+        /// Descrição do Processo
+        /// </summary>
+        public string NumeroDivida => _processoNode.SelectSingleNode("./numero_divida")?.InnerText;
+        
+        /// <summary>
         /// Descrição do Processo
         /// </summary>
         public string Descricao => _processoNode.SelectSingleNode("./descricao")?.InnerText;
+
+        /// <summary>
+        /// Foro do Processo
+        /// </summary>
+        public string Foro => _processoNode.SelectSingleNode("./foro")?.InnerText;
 
         /// <summary>
         /// Cartório do Processo
@@ -113,8 +145,13 @@ namespace BipbopNet.Parser
         /// <summary>
         /// Corresponde ao território em que o juiz de primeiro grau irá exercer sua jurisdição e pode abranger um ou mais municípios
         /// </summary>
-        public string Comarca => _processoNode.SelectSingleNode("./comarca")?.InnerText;
+        public Comarca Comarca => Comarca.Factory(_processoNode.SelectSingleNode("./comarca"));
         
+        /// <summary>
+        /// Corresponde ao território em que o juiz de primeiro grau irá exercer sua jurisdição e pode abranger um ou mais municípios
+        /// </summary>
+        public Comarca ComarcaInicial => Comarca.Factory(_processoNode.SelectSingleNode("./comarca_inicial"));
+
         /// <summary>
         /// Código Interno do Sistema do Tribunal
         /// </summary>
@@ -129,6 +166,14 @@ namespace BipbopNet.Parser
         /// Fase: momento processual. Existem duas essenciais de conhecimento (fase decisória) e de execução (cumprimento de sentença).
         /// </summary>
         public string Fase => _processoNode.SelectSingleNode("./fase")?.InnerText;
+
+        /// <summary>
+        /// Incidente processual é uma questão controversa secundária e acessória que surge no curso de um processo e que precisa ser julgada antes da decisão do mérito da causa principal.
+        /// </summary>
+        public Natureza Natureza => Natureza.Factory(_processoNode.SelectSingleNode("./natureza"));
+
+
+        public Estatisticas Estatisticas => Estatisticas.Factory(_processoNode.SelectSingleNode("./natureza"));
         
         /// <summary>
         /// Incidente processual é uma questão controversa secundária e acessória que surge no curso de um processo e que precisa ser julgada antes da decisão do mérito da causa principal.
@@ -143,7 +188,9 @@ namespace BipbopNet.Parser
         /// <summary>
         /// Julgador, juiz ou desembargador
         /// </summary>
-        public Julgador Julgador => Parser.Julgador.Factory(_processoNode.SelectSingleNode("./julgador"));
+        public Julgador Julgador => Julgador.Factory(_processoNode.SelectSingleNode("./julgador"));
+        
+        public bool SegredoJustica => _processoNode.SelectSingleNode("./segredo_justica") != null;
         
         /// <summary>
         /// Localização Física do Processo
@@ -173,15 +220,34 @@ namespace BipbopNet.Parser
         /// Tipo de Prioridade
         /// </summary>
         public string Prioridade => _processoNode.SelectSingleNode("./prioridade")?.InnerText;
+        
+        public string Juizado => _processoNode.SelectSingleNode("./juizado")?.InnerText;
+
         /// <summary>
         /// Situação do Processo
         /// </summary>
         public string Situacao => _processoNode.SelectSingleNode("./situacao")?.InnerText;
+
+        /// <summary>
+        /// Situação do Processo
+        /// </summary>
+        public string LocalizacaoImovel => _processoNode.SelectSingleNode("./localizacao_imovel")?.InnerText;
+
         /// <summary>
         /// Rito
         /// </summary>
         public string Rito => _processoNode.SelectSingleNode("./rito")?.InnerText;
         
+        /// <summary>
+        /// Seção
+        /// </summary>
+        public string Secao => _processoNode.SelectSingleNode("./secao")?.InnerText;
+        
+        /// <summary>
+        /// Adicional
+        /// </summary>
+        public string Adicional => _processoNode.SelectSingleNode("./adicional")?.InnerText;
+
         /// <summary>
         /// Solução
         /// </summary>
@@ -192,10 +258,23 @@ namespace BipbopNet.Parser
         /// </summary>
         public string UrlProcesso => _processoNode.SelectSingleNode("./url_processo")?.InnerText;
 
-        public CourtDate Autuacao => CourtDate.FromNode(_processoNode.SelectSingleNode("autuacao"));
-        public CourtDate Distribuicao => CourtDate.FromNode(_processoNode.SelectSingleNode("autuacao"));
-        public CourtDate Juizo => CourtDate.FromNode(_processoNode.SelectSingleNode("juizo"));
-        public CourtDate Inscricao => CourtDate.FromNode(_processoNode.SelectSingleNode("inscricao"));
+        public CourtDate Autuacao => CourtDate.FromNode(_processoNode.SelectSingleNode("./autuacao"));
+        public CourtDate Distribuicao => CourtDate.FromNode(_processoNode.SelectSingleNode("./distribuicao"));
+        
+        public CourtDate Juizo => CourtDate.FromNode(_processoNode.SelectSingleNode("./juizo"));
+        public CourtDate AndamentoInicial => CourtDate.FromNode(_processoNode.SelectSingleNode("./andamento_inicial"));
+
+        public CourtDate DataValorCausa => CourtDate.FromNode(_processoNode.SelectSingleNode("./data_valor_causa"));
+
+        public CourtDate Arquivamento => CourtDate.FromNode(_processoNode.SelectSingleNode("./arquivamento"));
+
+        public CourtDate TransitoJulgado => CourtDate.FromNode(_processoNode.SelectSingleNode("./transito_julgado"));
+
+        public CourtDate Inscricao => CourtDate.FromNode(_processoNode.SelectSingleNode("./inscricao"));
+
+        public CourtDate Ajuizamento => CourtDate.FromNode(_processoNode.SelectSingleNode("./ajuizamento"));
+
+        public CourtDate Audiencia => CourtDate.FromNode(_processoNode.SelectSingleNode("./audiencia"));
 
         public Table Table
         {
@@ -217,7 +296,7 @@ namespace BipbopNet.Parser
         {
             get
             {
-                var instancia = _processoNode.SelectSingleNode("intancia")?.InnerText;
+                var instancia = _processoNode.SelectSingleNode("./intancia")?.InnerText;
                 if (instancia == null) return null;
                 return int.Parse(instancia);
             }
@@ -243,7 +322,7 @@ namespace BipbopNet.Parser
             }
         }
 
-        public ValorCausa ValorCausa => Parser.ValorCausa.Factory( _processoNode.SelectSingleNode("./valor_causa"));
+        public ValorCausa ValorCausa => ValorCausa.Factory( _processoNode.SelectSingleNode("./valor_causa"));
 
         public Vara Vara
         {

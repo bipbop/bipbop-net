@@ -120,7 +120,7 @@ namespace BipbopNet
             if (request.Content?.Headers?.ContentType?.MediaType == "application/json") return JObject.Parse(response);
             var document = new XmlDocument();
             document.LoadXml(response);
-            var bipbopDocument = new BipbopDocument(document); /* assertion */
+            var unused = new BipbopDocument(document); /* assertion */
             throw new Exception("Unexpected Content (Type was returned)");
         }
 

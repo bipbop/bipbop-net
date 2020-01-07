@@ -15,7 +15,7 @@ namespace BipbopNet.Push
     /// </summary>
     public class Listener
     {
-        private static readonly Lazy<Task<string>> LazyIpResponse = new Lazy<Task<string>>(IpResponse);
+        private static readonly Lazy<Task<string>> LazyIpResponse = new Lazy<Task<string>>(() => IpResponse());
         private static readonly Random _random = new Random();
         private readonly Mutex _handleMutex = new Mutex();
         private readonly HttpListener _httpListener;
@@ -61,10 +61,11 @@ namespace BipbopNet.Push
         /// <summary>
         /// Inicia o Servidor
         /// </summary>
-        public async Task Start(bool validateServerAddr = true)
+        public async Task Start(bool validateServerAddr = true, int timeout = 30)
         {
             _runServer = true;
             _httpListener.Start();
+            if (!validateServerAddr) return;
 
             byte[] TemporaryHandler(HttpListenerContext ctx, HttpListenerResponse res)
             {
@@ -72,15 +73,19 @@ namespace BipbopNet.Push
                 return Encoding.UTF8.GetBytes(_token);
             }
 
-            var stop = false;
-            var handle = HandleConnectionsAsync(TemporaryHandler, () => stop);
+            var canContinue = true;
+            var exitEvent = new ManualResetEvent(false);
+
+            // ReSharper disable once AccessToModifiedClosure
+            var handle = HandleConnectionsAsync(TemporaryHandler, () => canContinue, exitEvent);
             try
             {
-                await TokenRequest();
+                await TokenRequest(timeout);
             }
             finally
             {
-                stop = true;
+                canContinue = false;
+                exitEvent.Set();
             }
 
             await handle;
@@ -118,21 +123,23 @@ namespace BipbopNet.Push
             var ipResponse = await Ip;
             return $"http://{ipResponse}:{port ?? DefaultPort}/";
         }
-
-        private async Task TokenRequest()
+        
+        private async Task TokenRequest(int timeout = 30)
         {
-            var ipRequest = await new HttpClient().GetAsync(await ServerAddr);
-            var ipResponse = (await ipRequest.Content.ReadAsStringAsync()).Trim();
-            if (ipResponse != _token) throw new HttpListenerException();
+            var httpClient = new HttpClient {Timeout = TimeSpan.FromSeconds(timeout)};
+            var tokenResponse = await httpClient.GetAsync(await ServerAddr);
+            var tokenData = (await tokenResponse.Content.ReadAsStringAsync()).Trim();
+            if (tokenData != _token) throw new ListenerException();
         }
 
         /// <summary>
         /// Resposta do IP
         /// </summary>
         /// <returns></returns>
-        private static async Task<string> IpResponse()
+        private static async Task<string> IpResponse(int timeout = 30)
         {
-            var ipRequest = await new HttpClient().GetAsync("http://ipinfo.io/ip");
+            var httpClient = new HttpClient {Timeout = TimeSpan.FromSeconds(timeout)};
+            var ipRequest = await httpClient.GetAsync("http://ipinfo.io/ip");
             var ipResponse = (await ipRequest.Content.ReadAsStringAsync()).Trim();
             return ipResponse;
         }
@@ -151,10 +158,18 @@ namespace BipbopNet.Push
         /// </summary>
         public void StopSync()
         {
+            if (!_runServer) return;
             _runServer = false;
+            if (!_httpListener.IsListening) return;
             _handleMutex.WaitOne();
-            _httpListener.Stop();
-            _handleMutex.ReleaseMutex();
+            try
+            {
+                _httpListener.Stop();
+            }
+            finally
+            {
+                _handleMutex.ReleaseMutex();
+            }
         }
 
         ~Listener()
@@ -171,15 +186,22 @@ namespace BipbopNet.Push
             HandleConnections(null);
         }
 
-        private void HandleConnections(Handler handler = null, Func<bool> stopCondition = null)
+        private void HandleConnections(Handler handler = null, Func<bool> continueCallback = null, ManualResetEvent reset = null)
         {
             _handleMutex.WaitOne();
-            while ((stopCondition?.Invoke() ?? _runServer) && _httpListener.IsListening)
+            try
             {
-                HandleConnection(handler);
+                while ((continueCallback?.Invoke() ?? _runServer) && _httpListener.IsListening)
+                {
+                    HandleConnection(handler);
+                    reset?.WaitOne();
+                }
+            }
+            finally
+            {
+                _handleMutex.ReleaseMutex();
             }
 
-            _handleMutex.ReleaseMutex();
         }
 
         private void HandleConnection(Handler userHandler = null)
@@ -222,9 +244,13 @@ namespace BipbopNet.Push
             return HandleConnectionsAsync(null);
         }
 
-        private Task HandleConnectionsAsync(Handler userHandler = null, Func<bool> stopCondition = null)
+        private Task HandleConnectionsAsync(Handler userHandler = null, Func<bool> continueCallback = null, ManualResetEvent reset = null)
         {
-            return Task.Run(() => HandleConnections(userHandler, stopCondition));
+            return Task.Run(() => HandleConnections(userHandler, continueCallback, reset));
         }
+    }
+
+    internal class ListenerException : Exception
+    {
     }
 }

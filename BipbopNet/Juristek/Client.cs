@@ -111,13 +111,12 @@ namespace BipbopNet.Juristek
             var configuration = userConfiguration == null
                 ? new PushConfiguration()
                 : (PushConfiguration) userConfiguration.Clone();
-            configuration.Parameters = configuration.Parameters ?? new List<KeyValuePair<string, string>>();
+            var parameters = configuration.Parameters?.ToList() ?? new List<KeyValuePair<string, string>>();
             configuration.Query = "SELECT FROM 'JURISTEK'.'PUSH'";
-            var keyValuePairs = configuration.Parameters?.ToList() ?? new List<KeyValuePair<string, string>>();
-            keyValuePairs.Add(new KeyValuePair<string, string>("data", query.ToString()));
+            parameters.Add(new KeyValuePair<string, string>("data", query.ToString()));
             if (configuration.Callback != null)
-                keyValuePairs.Add(new KeyValuePair<string, string>("juristekCallback",
-                    configuration.Callback));
+                parameters.Add(new KeyValuePair<string, string>("juristekCallback", configuration.Callback));
+            configuration.Parameters = parameters;
             return configuration;
         }
 

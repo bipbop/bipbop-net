@@ -20,7 +20,7 @@ namespace BipbopNet.Tests
         public async Task PushListTest()
         {
             var list = await JuristekClient.Push.List(new ListParameters());
-            foreach (var i in list) Console.WriteLine(list);
+            foreach (var i in list) Console.WriteLine(i);
         }
 
         [Test]
@@ -36,7 +36,7 @@ namespace BipbopNet.Tests
         public async Task HttpServer()
         {
             var listener = new Listener();
-            listener.Start();
+            await listener.Start();
 
             var cnjQuery = Query.Cnj("0016306-32.2019.8.26.0502");
             var pushConfiguration = await JuristekClient.Push.Create(Juristek.Client.CreatePushConfiguration(cnjQuery,
@@ -54,6 +54,7 @@ namespace BipbopNet.Tests
             };
 
             await listener.HandleConnectionsAsync();
+            listener.StopSync();
         }
 
         [Test]
@@ -76,7 +77,7 @@ namespace BipbopNet.Tests
                 {
                     MaxVersion = 1,
                     At = DateTime.Now.AddMinutes(1), /* Tempo para conectar o WebSocket */
-                    Expire = DateTime.Now.AddMinutes(30)
+                    Expire = DateTime.Now.AddMinutes(30),
                 }));
             Assert.IsNotEmpty(pushConfiguration.Id);
             var pushStatus = await JuristekClient.Push.Status(pushConfiguration);
@@ -122,7 +123,11 @@ namespace BipbopNet.Tests
             var tjspTable = tjspDatabase.Tables.First(table =>
                 string.Compare(table.Name, "PrimeiraInstancia", StringComparison.OrdinalIgnoreCase) == 0);
 
-            Assert.Throws<QueryException>(() => new Query(tjspTable));
+            Assert.Throws<QueryException>(() =>
+            {
+                var query = new Query(tjspTable);
+                Console.WriteLine(query.ToString());
+            });
 
             var tjspQuery = new Query(tjspTable, new[]
             {

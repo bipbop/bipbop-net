@@ -77,7 +77,7 @@ namespace BipbopNet
         public async Task Stop()
         {
             OnStop?.Invoke(null, null);
-            await _client.Stop((WebSocketCloseStatus) 0, null);
+            await _client.Stop(0, null);
         }
         
         /// <summary>

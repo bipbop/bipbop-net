@@ -83,8 +83,10 @@ namespace BipbopNet.Tests
         [Test]
         public void DateTime()
         {
-            var dTime = (DateTime) ParseDocument(@"<?xml version=""1.0"" encoding=""UTF-8""?>
+            var dateTime = ParseDocument(@"<?xml version=""1.0"" encoding=""UTF-8""?>
 <BPQL><header><date-time>27/12/2019 09:14:25</date-time></header><body/></BPQL>").DateTime;
+            if (dateTime == null) return;
+            var dTime = (DateTime) dateTime;
             Assert.IsInstanceOf<DateTime>(dTime);
             Assert.AreEqual(27, dTime.Day);
             Assert.AreEqual(12, dTime.Month);

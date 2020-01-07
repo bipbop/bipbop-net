@@ -21,6 +21,16 @@ namespace BipbopNet.Parser
         }
 
         /// <summary>
+        /// Situação da Parte
+        /// </summary>
+        public string Status => _parte.Attributes?["status"]?.Value;
+        
+        /// <summary>
+        /// Numero da Parte
+        /// </summary>
+        public string Numero => _parte.Attributes?["numero"]?.Value;
+        
+        /// <summary>
         /// CPF, RG ou CNPJ da parte
         /// </summary>
         public string Documento => _parte.Attributes?["documento"]?.Value;
