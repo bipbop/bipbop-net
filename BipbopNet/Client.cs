@@ -39,7 +39,7 @@ namespace BipbopNet
         /// <param name="apiKey">Chave de API da BIPBOP</param>
         /// <param name="endpoint">Endpoint da BIPBOP</param>
         /// <param name="proxy">Proxy</param>
-        public Client(string apiKey, string endpoint = null, string proxy = null)
+        public Client(string apiKey = null, string endpoint = null, string proxy = null)
         {
             var proxyUrl = proxy ?? Environment.GetEnvironmentVariable("BIPBOP_PROXY");
             ApiKey = apiKey ?? Environment.GetEnvironmentVariable("BIPBOP_APIKEY");

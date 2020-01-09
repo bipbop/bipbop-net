@@ -23,11 +23,11 @@ namespace BipbopNet.Tests
                 string.Compare(table.Name, "CERTIDAO", StringComparison.OrdinalIgnoreCase) == 0);
             Assert.IsNotNull(rfbTable);
             Assert.IsNotNull(rfbDatabase);
-            await Client.Request("SELECT FROM 'RFB'.'CERTIDAO'", new[]
+            var query = await Client.Request("SELECT FROM 'RFB'.'CERTIDAO'", new[]
             {
                 new KeyValuePair<string, string>("DOCUMENTO", "375.543.118-16"),
                 new KeyValuePair<string, string>("NASCIMENTO", "08/06/1990"),
-            });
+            }); 
         }
     }
 }

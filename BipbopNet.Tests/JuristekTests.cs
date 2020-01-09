@@ -12,7 +12,7 @@ namespace BipbopNet.Tests
     public class JuristekTests
     {
         private readonly Lazy<Juristek.Client> _juristekClient = new Lazy<Juristek.Client>(() =>
-            new Juristek.Client(new Client(Environment.GetEnvironmentVariable("BIPBOP_APIKEY"))));
+            new Juristek.Client(new Client()));
 
         public Juristek.Client JuristekClient => _juristekClient.Value;
 
