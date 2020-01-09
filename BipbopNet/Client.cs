@@ -43,6 +43,8 @@ namespace BipbopNet
         {
             var proxyUrl = proxy ?? Environment.GetEnvironmentVariable("BIPBOP_PROXY");
             ApiKey = apiKey ?? Environment.GetEnvironmentVariable("BIPBOP_APIKEY");
+            if (string.IsNullOrWhiteSpace(ApiKey))
+                throw new ArgumentException("Value cannot be null or whitespace.", nameof(ApiKey));
             Proxy = proxyUrl != null ? new WebProxy(new Uri(proxyUrl)) : null;
             _endPoint = new Uri(endpoint ?? Environment.GetEnvironmentVariable("BIPBOP_ENDPOINT") ?? Endpoint);
             _lazyDescription = new Lazy<Task<Info>>(RequestDescription);
