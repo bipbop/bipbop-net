@@ -16,4 +16,9 @@ jobs:
     - name: Build with dotnet
       run: dotnet build --configuration Release
     - name: Test
+      with: # Configura o segredo como uma entrada
+        super_secret: ${{ secrets.BIPBOP_APIKEY }}
+      env: # Ou como uma variável de ambiente
+        super_secret: ${{ secrets.BIPBOP_APIKEY }}
       run: dotnet test
+      
