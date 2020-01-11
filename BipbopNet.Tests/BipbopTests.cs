@@ -27,7 +27,8 @@ namespace BipbopNet.Tests
             {
                 new KeyValuePair<string, string>("DOCUMENTO", "375.543.118-16"),
                 new KeyValuePair<string, string>("NASCIMENTO", "08/06/1990"),
-            }); 
+            });
+            var name = query.Document.SelectSingleNode("/BPQL/body//nome").InnerText;
         }
     }
 }

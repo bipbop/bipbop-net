@@ -33,7 +33,7 @@ namespace BipbopNet.Parser
         public string Origin => _processoNode.Attributes?["origin"]?.Value;
         
         /// <summary>
-        /// ID único do PUSh
+        /// ID único do PUSH
         /// </summary>
         public string PushGuid => _processoNode.Attributes?["pushguid"]?.Value;
 
