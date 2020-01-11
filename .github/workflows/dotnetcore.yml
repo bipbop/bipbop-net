@@ -4,21 +4,18 @@ on: [push]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
     steps:
-    - uses: actions/checkout@v1
-    - name: Setup .NET Core
+      - uses: actions/checkout@v1
+      - name: Setup .NET Core
+      with: # Configura o segredo como uma entrada
+        dotnet-version: 2.2.108
+      env: # Ou como uma variável de ambiente
+        BIPBOP_APIKEY: ${{ secrets.BIPBOP_APIKEY }}
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 2.2.108
     - name: Build with dotnet
       run: dotnet build --configuration Release
     - name: Test
-      with: # Configura o segredo como uma entrada
-        super_secret: ${{ secrets.BIPBOP_APIKEY }}
-      env: # Ou como uma variável de ambiente
-        super_secret: ${{ secrets.BIPBOP_APIKEY }}
       run: dotnet test
       
