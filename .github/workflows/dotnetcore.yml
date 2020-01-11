@@ -13,7 +13,6 @@ jobs:
       env: # Ou como uma variável de ambiente
         BIPBOP_APIKEY: ${{ secrets.BIPBOP_APIKEY }}
       uses: actions/setup-dotnet@v1
-      with:
     - name: Build with dotnet
       run: dotnet build --configuration Release
     - name: Test
