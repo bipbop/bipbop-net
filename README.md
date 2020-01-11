@@ -78,7 +78,7 @@ listener.OnRequest += (sender, args) => {
 };
 ```
 
-#### Criação de Consultas Assíncrona 
+#### Criação de Consultas Assíncronas 
 
 ```c#
 var JuristekClient = new Juristek.Client(new Client()));
