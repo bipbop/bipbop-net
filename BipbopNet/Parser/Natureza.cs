@@ -2,7 +2,7 @@ using System.Xml;
 
 namespace BipbopNet.Parser
 {
-    public class Natureza: Vara
+    public class Natureza : Vara
     {
         public Natureza(XmlNode orgao) : base(orgao)
         {
@@ -11,7 +11,6 @@ namespace BipbopNet.Parser
         public new static Natureza Factory(XmlNode node)
         {
             return node == null ? null : new Natureza(node);
-            
         }
     }
 }

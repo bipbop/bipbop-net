@@ -7,14 +7,14 @@ namespace BipbopNet.Parser
     {
         private readonly XmlNode _node;
 
-        public int? Paginas => ReadInteger("./paginas");
-        public int? Volumes => ReadInteger("./volumes");
-        public int? Caixa => ReadInteger("./caixa");
-
         public Estatisticas(XmlNode node)
         {
             _node = node ?? throw new ArgumentNullException(nameof(node));
         }
+
+        public int? Paginas => ReadInteger("./paginas");
+        public int? Volumes => ReadInteger("./volumes");
+        public int? Caixa => ReadInteger("./caixa");
 
         private int? ReadInteger(string path)
         {

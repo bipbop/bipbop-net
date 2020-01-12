@@ -9,26 +9,15 @@ namespace BipbopNet.Parser
         private static readonly CultureInfo CultureInfo = new CultureInfo("pt-BR");
 
         /// <summary>
-        /// Unidade Monetária da Causa
+        ///     Unidade Monetária da Causa
         /// </summary>
         public readonly string UnidadeMonetaria = "R$";
-        
+
         /// <summary>
-        /// Valor como String
+        ///     Valor como String
         /// </summary>
         public readonly string Value;
 
-        /// <summary>
-        /// Criação do Valor da Causa
-        /// </summary>
-        /// <param name="node">Valor da Causa</param>
-        /// <returns></returns>
-        public static ValorCausa Factory(XmlNode node)
-        {
-            if (node == null) return null;
-            return new ValorCausa(node);
-        }
-        
         public ValorCausa(XmlNode node)
         {
             if (node == null) throw new ArgumentNullException(nameof(node));
@@ -38,9 +27,20 @@ namespace BipbopNet.Parser
         }
 
         /// <summary>
-        /// Valor como Decimal
+        ///     Valor como Decimal
         /// </summary>
         public decimal AsDecimal => decimal.Parse(Value, NumberStyles.Currency, CultureInfo);
+
+        /// <summary>
+        ///     Criação do Valor da Causa
+        /// </summary>
+        /// <param name="node">Valor da Causa</param>
+        /// <returns></returns>
+        public static ValorCausa Factory(XmlNode node)
+        {
+            if (node == null) return null;
+            return new ValorCausa(node);
+        }
 
         public override string ToString()
         {

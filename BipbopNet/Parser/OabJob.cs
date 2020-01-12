@@ -4,11 +4,11 @@ using Newtonsoft.Json.Linq;
 namespace BipbopNet.Parser
 {
     /// <summary>
-    /// Identificador de PUSH da OAB
+    ///     Identificador de PUSH da OAB
     /// </summary>
-    public class OabPush : PushIdentifier
+    public class OabJob : JobIdentifier
     {
-        public OabPush(JToken push)
+        public OabJob(JToken push)
         {
             Label = push["push"]?["label"].ToString();
             Id = push["push"]?["_id"]?["$id"].ToString();

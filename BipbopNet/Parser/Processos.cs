@@ -4,7 +4,7 @@ using System.Xml;
 namespace BipbopNet.Parser
 {
     /// <summary>
-    /// Documento BIPBOP que contém Processos
+    ///     Documento BIPBOP que contém Processos
     /// </summary>
     public class Processos : BipbopDocument
     {
@@ -12,9 +12,9 @@ namespace BipbopNet.Parser
         {
         }
 
-        
+
         /// <summary>
-        /// Resgata os processos
+        ///     Resgata os processos
         /// </summary>
         public IEnumerable<Processo> Retrieve
         {

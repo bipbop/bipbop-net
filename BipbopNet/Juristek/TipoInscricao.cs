@@ -1,10 +1,13 @@
+using System;
+using Newtonsoft.Json;
+
 namespace BipbopNet.Juristek
 {
-
     /// <summary>
-    /// Tipos de Inscrição
+    ///     Tipos de Inscrição
     /// </summary>
-    public class TipoInscricao
+    [Serializable]
+    public class TipoInscricao : JsonSerializer
     {
         public readonly string Value;
 
@@ -14,27 +17,32 @@ namespace BipbopNet.Juristek
         }
 
         /// <summary>
-        /// Advogado
+        ///     Advogado
         /// </summary>
         public static TipoInscricao Advogado => new TipoInscricao("D");
+
         /// <summary>
-        /// Suplementar
+        ///     Suplementar
         /// </summary>
         public static TipoInscricao Suplementar => new TipoInscricao("S");
+
         /// <summary>
-        /// Transferência
+        ///     Transferência
         /// </summary>
         public static TipoInscricao Transferencia => new TipoInscricao("T");
+
         /// <summary>
-        /// Estagiário
+        ///     Estagiário
         /// </summary>
         public static TipoInscricao Estagiario => new TipoInscricao("E");
+
         /// <summary>
-        /// Desconhecido
+        ///     Desconhecido
         /// </summary>
         public static TipoInscricao Desconhecido => new TipoInscricao("A");
+
         /// <summary>
-        /// Pessoas sem curso de direito
+        ///     Pessoas sem curso de direito
         /// </summary>
         public static TipoInscricao Normal => new TipoInscricao("N");
 

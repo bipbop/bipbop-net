@@ -5,7 +5,7 @@ using System.Xml;
 namespace BipbopNet.Parser
 {
     /// <summary>
-    /// Descreve uma Tabela do INFO.INFO
+    ///     Descreve uma Tabela do INFO.INFO
     /// </summary>
     public class TableDescription : Table
     {

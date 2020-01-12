@@ -6,7 +6,7 @@ using System.Xml;
 namespace BipbopNet.Parser
 {
     /// <summary>
-    /// Parâmetros de uma Tabela
+    ///     Parâmetros de uma Tabela
     /// </summary>
     public class FieldDescription
     {
@@ -19,45 +19,50 @@ namespace BipbopNet.Parser
             _xmlNode = xmlNode ?? throw new ArgumentNullException(nameof(xmlNode));
         }
 
-        
+
         /// <summary>
-        /// Nome do parâmetro, o qual será usado para enviar
+        ///     Nome do parâmetro, o qual será usado para enviar
         /// </summary>
         public string Name => _xmlNode.Attributes?["name"]?.Value;
+
         /// <summary>
-        /// Nome do parâmetro descritivo ao usuário
+        ///     Nome do parâmetro descritivo ao usuário
         /// </summary>
         public string Caption => _xmlNode.Attributes?["caption"]?.Value;
+
         /// <summary>
-        /// Máscara do Botão
+        ///     Máscara do Botão
         /// </summary>
         public string Mask => _xmlNode.Attributes?["mask"]?.Value;
+
         /// <summary>
-        /// Descrição
+        ///     Descrição
         /// </summary>
         public string Description => _xmlNode.Attributes?["description"]?.Value;
+
         /// <summary>
-        /// É requerido?
+        ///     É requerido?
         /// </summary>
         public bool Required => _xmlNode.Attributes?["required"]?.Value == "false";
+
         /// <summary>
-        /// É campo principal para consulta?
+        ///     É campo principal para consulta?
         /// </summary>
         public bool MainField => _xmlNode.Attributes?["mainField"]?.Value == "true";
 
         /// <summary>
-        /// É um COMBOBOX
+        ///     É um COMBOBOX
         /// </summary>
         public bool Select => _xmlNode.Attributes?["name"]?.Value == "true";
 
         /// <summary>
-        /// Máscaras Alternativas
+        ///     Máscaras Alternativas
         /// </summary>
         public string[] AlternativeMask =>
             (from XmlNode i in _xmlNode.SelectNodes("./alternative_mask") select i.InnerText).ToArray();
 
         /// <summary>
-        /// Opções
+        ///     Opções
         /// </summary>
         public IEnumerable<KeyValuePair<string, string>> Options =>
             (from XmlNode i in _xmlNode.SelectNodes("./alternative_mask")

@@ -6,6 +6,7 @@ using System.Xml;
 
 namespace BipbopNet.Parser
 {
+    [Serializable]
     public class BipbopDocument
     {
         private readonly CultureInfo _cultureInfo = new CultureInfo("pt-BR");
@@ -17,7 +18,7 @@ namespace BipbopNet.Parser
         protected readonly XmlNode Root;
 
         /// <summary>
-        /// Documento BIPBOP
+        ///     Documento BIPBOP
         /// </summary>
         /// <param name="document">XML recebido</param>
         public BipbopDocument(XmlDocument document)
@@ -28,17 +29,17 @@ namespace BipbopNet.Parser
         }
 
         /// <summary>
-        /// Quantidade de Recursos (CPUs), utilizadas
+        ///     Quantidade de Recursos (CPUs), utilizadas
         /// </summary>
         public int? ResourceUse => ReadIntegerAttribute(Root, "resourceUse");
-        
+
         /// <summary>
-        /// Quantidade de Recursos Especiais (GPUs e CPUs Segunda Geração)
+        ///     Quantidade de Recursos Especiais (GPUs e CPUs Segunda Geração)
         /// </summary>
         public int? SpecialResourceUse => ReadIntegerAttribute(Root, "specialResourceUse");
 
         /// <summary>
-        /// Tempo de Execução no Backend
+        ///     Tempo de Execução no Backend
         /// </summary>
         public int? ExecutionTime
         {
@@ -50,7 +51,7 @@ namespace BipbopNet.Parser
         }
 
         /// <summary>
-        /// Data e Hora do Documento
+        ///     Data e Hora do Documento
         /// </summary>
         public DateTime? DateTime
         {
@@ -64,7 +65,7 @@ namespace BipbopNet.Parser
 
 
         /// <summary>
-        /// Próximo Apontamento
+        ///     Próximo Apontamento
         /// </summary>
         public NextAppointment NextAppointment
         {
@@ -77,17 +78,17 @@ namespace BipbopNet.Parser
         }
 
         /// <summary>
-        /// Consulta
+        ///     Consulta
         /// </summary>
         public string Query => Root.SelectSingleNode("./header/query")?.InnerText;
-        
+
         /// <summary>
-        /// Descrição da Consulta
+        ///     Descrição da Consulta
         /// </summary>
         public string Description => Root.SelectSingleNode("./header/description")?.InnerText;
 
         /// <summary>
-        /// Alertas que ocorreram durante o processamento
+        ///     Alertas que ocorreram durante o processamento
         /// </summary>
         public DocumentException[] Warnings
         {
@@ -99,7 +100,7 @@ namespace BipbopNet.Parser
         }
 
         /// <summary>
-        /// Chamadas válidas (para o caso de rotear em diversas chamadas)
+        ///     Chamadas válidas (para o caso de rotear em diversas chamadas)
         /// </summary>
         public string[] ValidRequests
         {

@@ -7,55 +7,56 @@ using Exception = BipbopNet.Parser.Exception;
 
 namespace BipbopNet.Push
 {
+    [Serializable]
     public class ListenerEvent : EventArgs
     {
         /// <summary>
-        /// Chave de API do Dono do Documento
+        ///     Chave de API do Dono do Documento
         /// </summary>
         public readonly string ApiKey;
 
         /// <summary>
-        /// Dono do Documento
+        ///     Dono do Documento
         /// </summary>
         public readonly string Company;
 
         /// <summary>
-        /// Documento
+        ///     Documento
         /// </summary>
         public readonly BipbopDocument Document;
 
         /// <summary>
-        /// Se há exceção no documento
+        ///     Se há exceção no documento
         /// </summary>
         public readonly bool Exception;
 
         /// <summary>
-        /// Memória do Trabalho
+        ///     Identificador do PUSH
+        /// </summary>
+        public readonly JobIdentifier Job;
+
+        /// <summary>
+        ///     Memória do Trabalho
         /// </summary>
         public readonly string MemoryId;
-        
+
         /// <summary>
-        /// Exceção do Documento
+        ///     Exceção do Documento
         /// </summary>
         public readonly Exception ParserException;
-        
+
         /// <summary>
-        /// Identificador do PUSH
-        /// </summary>
-        public readonly PushIdentifier Push;
-        
-        /// <summary>
-        /// Versão do Documento
+        ///     Versão do Documento
         /// </summary>
         public readonly int? Version;
 
         /// <summary>
-        /// Recebe um Evento
+        ///     Recebe um Evento
         /// </summary>
         /// <param name="request">Requisição</param>
         public ListenerEvent(HttpListenerRequest request)
         {
-            Push = new PushIdentifier
+            Job = new JobIdentifier
             {
                 Id = request.Headers["X-BIPBOP-DOCUMENT-ID"],
                 Label = request.Headers["X-BIPBOP-DOCUMENT-LABEL"]

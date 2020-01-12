@@ -5,22 +5,22 @@ namespace BipbopNet.Parser
     public class TargetDescription
     {
         /// <summary>
-        /// Descrição do Portal de Crawling
+        ///     Descrição do Portal de Crawling
         /// </summary>
         public readonly string Description;
-        
+
         /// <summary>
-        /// Nome do Portal de Crawling (APENAS BIPBOP)
+        ///     Nome do Portal de Crawling (APENAS BIPBOP)
         /// </summary>
         public readonly string Label;
-        
+
         /// <summary>
-        /// Identificador do Portal de Crawling
+        ///     Identificador do Portal de Crawling
         /// </summary>
         public readonly string Name;
-        
+
         /// <summary>
-        /// URL do Portal de Crawling
+        ///     URL do Portal de Crawling
         /// </summary>
         public readonly Uri Url;
 

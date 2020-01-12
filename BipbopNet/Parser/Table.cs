@@ -1,7 +1,7 @@
 namespace BipbopNet.Parser
 {
     /// <summary>
-    /// Descreve uma Tabela
+    ///     Descreve uma Tabela
     /// </summary>
     public class Table : TargetDescription
     {
@@ -14,7 +14,7 @@ namespace BipbopNet.Parser
         }
 
         /// <summary>
-        /// Retorna uma consulta de SELECT
+        ///     Retorna uma consulta de SELECT
         /// </summary>
         /// <returns></returns>
         public string SelectString()

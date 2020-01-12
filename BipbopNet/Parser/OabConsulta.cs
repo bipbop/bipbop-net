@@ -14,13 +14,15 @@ namespace BipbopNet.Parser
         }
 
         /// <summary>
-        /// Lista de Advogados de uma Consulta OAB
+        ///     Lista de Advogados de uma Consulta OAB
         /// </summary>
         public IEnumerable<OabAdvogado> Advogados => (from adv in _obj["who"] select new OabAdvogado(adv)).ToArray();
 
         /// <summary>
-        /// Lista de Requisições na BIPBOP
+        ///     Lista de Requisições na BIPBOP
         /// </summary>
-        public IEnumerable<OabPush> Pushes => (from push in _obj["pushes"] select new OabPush(push)).ToArray();
+        public IEnumerable<OabJob> Pushes => _obj["pushes"]
+            .Where(push => push["push"]?["_id"]?["$id"] != null)
+            .Select(push => new OabJob(push)).ToArray();
     }
 }

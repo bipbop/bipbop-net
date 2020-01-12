@@ -7,13 +7,14 @@ namespace BipbopNet.Parser
     public class CourtDate
     {
         private static readonly CultureInfo CultureInfo = new CultureInfo("pt-BR");
+
         /// <summary>
-        /// Formato da Data String
+        ///     Formato da Data String
         /// </summary>
         public readonly string Format;
-        
+
         /// <summary>
-        /// Valor da Data String
+        ///     Valor da Data String
         /// </summary>
         public readonly string Value;
 
@@ -31,13 +32,13 @@ namespace BipbopNet.Parser
         }
 
         /// <summary>
-        /// Data
+        ///     Data
         /// </summary>
         public DateTime DateTime => DateTime.Parse(Value, CultureInfo);
 
 
         /// <summary>
-        /// Constrói a partir de um nó XML
+        ///     Constrói a partir de um nó XML
         /// </summary>
         /// <param name="node">Nó</param>
         /// <returns>CourtDate ou NULL</returns>

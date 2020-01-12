@@ -1,7 +1,9 @@
+using System;
 using BipbopNet.Parser;
 
 namespace BipbopNet.Juristek
 {
+    [Serializable]
     public class QueryException : DocumentException
     {
         public QueryException(string message, bool push = false, int code = -1, string origin = null,

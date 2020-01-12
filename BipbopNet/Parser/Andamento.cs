@@ -4,7 +4,7 @@ using System.Xml;
 namespace BipbopNet.Parser
 {
     /// <summary>
-    /// Andamento do Processo
+    ///     Andamento do Processo
     /// </summary>
     public class Andamento
     {
@@ -16,62 +16,62 @@ namespace BipbopNet.Parser
         }
 
         /// <summary>
-        /// Descrição do andamento processual na Justiça
+        ///     Descrição do andamento processual na Justiça
         /// </summary>
         public string Descricao => _andamento.SelectSingleNode("./descricao")?.InnerText;
 
         /// <summary>
-        /// Tipo, poucos portais preenchem a informação
+        ///     Tipo, poucos portais preenchem a informação
         /// </summary>
         public string Tipo => _andamento.SelectSingleNode("./tipo")?.InnerText;
 
         /// <summary>
-        /// Tipo do incidente, poucos portais preenchem a informação
+        ///     Tipo do incidente, poucos portais preenchem a informação
         /// </summary>
         public string TipoIncidente => _andamento.SelectSingleNode("./tipo_incidente")?.InnerText;
 
         /// <summary>
-        /// Tipo do andamento, poucos portais preenchem a informação
+        ///     Tipo do andamento, poucos portais preenchem a informação
         /// </summary>
         public string TipoAndamento => _andamento.SelectSingleNode("./tipo_andamento")?.InnerText;
 
         /// <summary>
-        /// URL do documento anexo ao andamento
+        ///     URL do documento anexo ao andamento
         /// </summary>
         public string UrlDocumento => _andamento.SelectSingleNode("./url_documento")?.InnerText;
 
         /// <summary>
-        /// Número do Andamento
+        ///     Número do Andamento
         /// </summary>
         public string NumeroAndamento => _andamento.SelectSingleNode("./numero_andamento")?.InnerText;
 
         /// <summary>
-        /// Código Nacional
+        ///     Código Nacional
         /// </summary>
         public string CodigoNacional => _andamento.SelectSingleNode("./codigoNacional")?.InnerText;
 
         /// <summary>
-        /// Ordenação
+        ///     Ordenação
         /// </summary>
         public string Ordenacao => _andamento.SelectSingleNode("./ordenacao")?.InnerText;
 
         /// <summary>
-        /// Ação
+        ///     Ação
         /// </summary>
         public string Acao => _andamento.SelectSingleNode("./acao")?.InnerText;
 
         /// <summary>
-        /// Data do Andamento
+        ///     Data do Andamento
         /// </summary>
         public CourtDate Data => CourtDate.FromNode(_andamento.SelectSingleNode("./data"));
 
         /// <summary>
-        /// Data da Autuação
+        ///     Data da Autuação
         /// </summary>
         public CourtDate Autuacao => CourtDate.FromNode(_andamento.SelectSingleNode("./autuacao"));
 
         /// <summary>
-        /// Data da Distribuição do Andamento
+        ///     Data da Distribuição do Andamento
         /// </summary>
         public CourtDate Distribuicao => CourtDate.FromNode(_andamento.SelectSingleNode("./distribuicao"));
 

@@ -5,49 +5,38 @@ namespace BipbopNet.Parser
     public class DocumentException : Exception
     {
         /// <summary>
-        /// Código da Exceção, abrir Exception.Codes
+        ///     Código da Exceção, abrir Exception.Codes
         /// </summary>
         public readonly int Code;
-        
-        
+
         /// <summary>
-        /// Código da Exceção
-        /// </summary>
-        public Codes ExceptionCode 
-        {
-            get {
-                Enum.TryParse(Code.ToString(), out Codes code);   
-                return code;
-            }
-        }
-        /// <summary>
-        /// Origem da Exceção caso hajam rotas
+        ///     Origem da Exceção caso hajam rotas
         /// </summary>
         public readonly Table From;
-        
+
         /// <summary>
-        /// Id da Exceção para DEBUG da BIPBOP
+        ///     Id da Exceção para DEBUG da BIPBOP
         /// </summary>
         public readonly string Id;
 
         /// <summary>
-        /// Código de LOG da Exceção para DEBUG da BIPBOP
+        ///     Código de LOG da Exceção para DEBUG da BIPBOP
         /// </summary>
         public readonly string Log;
-        
+
         /// <summary>
-        /// Origem da exceção
+        ///     Origem da exceção
         /// </summary>
         public readonly string Origin;
-        
+
         /// <summary>
-        /// A exceção é válida, exemplo: Processo não existe, segredo de justiça, coisas que podem ser exibidas
-        /// ao usuário.
+        ///     A exceção é válida, exemplo: Processo não existe, segredo de justiça, coisas que podem ser exibidas
+        ///     ao usuário.
         /// </summary>
         public readonly bool Push;
-        
+
         /// <summary>
-        /// Query que originou a exceção
+        ///     Query que originou a exceção
         /// </summary>
         public readonly string Query;
 
@@ -68,6 +57,19 @@ namespace BipbopNet.Parser
             Push = push;
             From = from;
             Query = query;
+        }
+
+
+        /// <summary>
+        ///     Código da Exceção
+        /// </summary>
+        public Codes ExceptionCode
+        {
+            get
+            {
+                Enum.TryParse(Code.ToString(), out Codes code);
+                return code;
+            }
         }
     }
 }

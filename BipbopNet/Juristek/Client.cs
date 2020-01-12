@@ -8,10 +8,11 @@ using BipbopNet.Push;
 
 namespace BipbopNet.Juristek
 {
+    [Serializable]
     public class Client
     {
         /// <summary>
-        /// Estados Válidos do País
+        ///     Estados Válidos do País
         /// </summary>
         public enum Estado
         {
@@ -46,71 +47,62 @@ namespace BipbopNet.Juristek
 
         private readonly Lazy<Task<Info>> _lazyDescription;
         private readonly Lazy<Push.Client> _lazyPushClient;
-        
+
         /// <summary>
-        /// Cliente BIPBOP
+        ///     Cliente BIPBOP
         /// </summary>
         public readonly BipbopNet.Client BipbopClient;
 
         /// <summary>
-        /// Inicia Cliente Juristek
+        ///     Inicia Cliente Juristek
         /// </summary>
         /// <code>
         /// var JuristekClient = new Juristek.Client(new Client());
         /// </code>
         /// <param name="bipbopClient">Cliente BIPBOP</param>
-        public Client(BipbopNet.Client bipbopClient)
+        public Client(BipbopNet.Client bipbopClient = null)
         {
-            BipbopClient = bipbopClient;
+            BipbopClient = bipbopClient ?? new BipbopNet.Client();
             _lazyPushClient = new Lazy<Push.Client>(() => new Push.Client(BipbopClient, Manager.Juristek));
             _lazyDescription = new Lazy<Task<Info>>(RequestDescription);
         }
 
         /// <summary>
-        /// Cliente de PUSH configurado para Juristek
+        ///     WebSocket do Cliente
+        /// </summary>
+        public WebSocket WebSocket => BipbopClient.WebSocket;
+
+        /// <summary>
+        ///     Cliente de PUSH configurado para Juristek
         /// </summary>
         public Push.Client Push => _lazyPushClient.Value;
-        
+
         /// <summary>
-        /// Consultas disponíveis no modelo Jurídico
+        ///     Consultas disponíveis no modelo Jurídico
         /// </summary>
         public Task<Info> Description => _lazyDescription.Value;
 
         /// <summary>
-        /// Consulta de Processo OAB
+        ///     Configurações da OAB
         /// </summary>
-        /// <param name="numeroOab">
-        /// Número da OAB completo
-        /// <example>12345-PE</example>
-        /// </param>
-        /// <param name="pushCallback">Callback da Requisição</param>
-        /// <param name="userEstado">Estado da Pesquisa</param>
-        /// <param name="tipoInscricao">Tipo de Inscrição</param>
-        /// <returns></returns>
-        public async Task<OabConsulta> OabProcesso(string numeroOab, Uri pushCallback, Estado? userEstado = null,
-            TipoInscricao tipoInscricao = null)
+        /// <returns>Configurações da Consulta OAB</returns>
+        public async Task<OabConsulta> OabProcesso(OABParameters parameters)
         {
-            return new OabConsulta(await BipbopClient.JRequest("SELECT FROM 'OABPROCESSO'.'CONSULTA'", new[]
-            {
-                new KeyValuePair<string, string>("numero_oab", numeroOab),
-                new KeyValuePair<string, string>("pushCallback", pushCallback.ToString()),
-                new KeyValuePair<string, string>("estado", userEstado == null ? null : userEstado.ToString()),
-                new KeyValuePair<string, string>("tipoInscricao",
-                    tipoInscricao == null ? TipoInscricao.Advogado.ToString() : tipoInscricao.ToString())
-            }));
+            if (parameters == null) throw new ArgumentNullException(nameof(parameters));
+            return new OabConsulta(await BipbopClient.JRequest("SELECT FROM 'OABPROCESSO'.'CONSULTA'", parameters));
         }
 
         /// <summary>
-        /// Configuração de PUSH específica da Juristek
+        ///     Configuração de PUSH específica da Juristek
         /// </summary>
         /// <param name="query">Consulta</param>
         /// <param name="userConfiguration">Configuração</param>
         /// <returns>Configuração do PUSH</returns>
-        public static PushConfiguration CreatePushConfiguration(Query query, PushConfiguration userConfiguration = null)
+        public static Configuration CreatePushConfiguration(Query query, Configuration userConfiguration = null)
         {
             var configuration = userConfiguration == null
-                ? new PushConfiguration()
-                : (PushConfiguration) userConfiguration.Clone();
+                ? new Configuration()
+                : (Configuration) userConfiguration.Clone();
             var parameters = configuration.Parameters?.ToList() ?? new List<KeyValuePair<string, string>>();
             configuration.Query = "SELECT FROM 'JURISTEK'.'PUSH'";
             parameters.Add(new KeyValuePair<string, string>("data", query.ToString()));
@@ -132,7 +124,7 @@ namespace BipbopNet.Juristek
         }
 
         /// <summary>
-        /// Executa uma requisição realtime na Juristek (não recomendado)
+        ///     Executa uma requisição realtime na Juristek (não recomendado)
         /// </summary>
         /// <param name="query">Consulta</param>
         /// <returns>Documento BIPBOP</returns>

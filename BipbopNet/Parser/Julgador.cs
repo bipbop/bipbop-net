@@ -13,7 +13,7 @@ namespace BipbopNet.Parser
             return new Julgador
             {
                 Nome = node.InnerText,
-                Tipo = node.Attributes?["tipo"]?.Value,
+                Tipo = node.Attributes?["tipo"]?.Value
             };
         }
 

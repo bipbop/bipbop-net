@@ -26,7 +26,7 @@ namespace BipbopNet.Tests
             var query = await Client.Request("SELECT FROM 'RFB'.'CERTIDAO'", new[]
             {
                 new KeyValuePair<string, string>("DOCUMENTO", "375.543.118-16"),
-                new KeyValuePair<string, string>("NASCIMENTO", "08/06/1990"),
+                new KeyValuePair<string, string>("NASCIMENTO", "08/06/1990")
             });
             var name = query.Document.SelectSingleNode("/BPQL/body//nome").InnerText;
         }

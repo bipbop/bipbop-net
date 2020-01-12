@@ -4,9 +4,8 @@ using System.Xml;
 
 namespace BipbopNet.Parser
 {
-
     /// <summary>
-    /// Portal de Informações
+    ///     Portal de Informações
     /// </summary>
     public class DatabaseDescription : Database
     {
@@ -22,7 +21,7 @@ namespace BipbopNet.Parser
         }
 
         /// <summary>
-        /// Páginas de Informação
+        ///     Páginas de Informação
         /// </summary>
         public IEnumerable<TableDescription> Tables =>
             (from XmlNode table in _xmlNode.SelectNodes("./table") select new TableDescription(this, table)).ToArray();

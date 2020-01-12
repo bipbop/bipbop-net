@@ -7,14 +7,11 @@ using Exception = BipbopNet.Parser.Exception;
 namespace BipbopNet.Juristek
 {
     /// <summary>
-    /// Factory de Query da Juristek
+    ///     Factory de Query da Juristek
     /// </summary>
+    [Serializable]
     public class Query
     {
-        /// <summary>
-        /// 
-        /// </summary>
-        public IEnumerable<KeyValuePair<string, string>> Parameters => _parameters.ToArray();
         public readonly IEnumerable<KeyValuePair<string, string>> _parameters;
         public readonly Table Table;
         public readonly bool Upload;
@@ -28,7 +25,11 @@ namespace BipbopNet.Juristek
         }
 
         /// <summary>
-        /// Tabela de Consulta CNJ
+        /// </summary>
+        public IEnumerable<KeyValuePair<string, string>> Parameters => _parameters.ToArray();
+
+        /// <summary>
+        ///     Tabela de Consulta CNJ
         /// </summary>
         private static Table CnjDescriptionTable =>
             new Table(
@@ -38,7 +39,7 @@ namespace BipbopNet.Juristek
 
 
         /// <summary>
-        /// Consulta de Número CNJ na Juristek
+        ///     Consulta de Número CNJ na Juristek
         /// </summary>
         /// <param name="processo">Número de Processo CNJ</param>
         /// <param name="userParameters">Parâmetros de Usuário</param>
@@ -60,7 +61,7 @@ namespace BipbopNet.Juristek
         }
 
         /// <summary>
-        /// Realiza uma Consulta CNJ
+        ///     Realiza uma Consulta CNJ
         /// </summary>
         /// <param name="numeroProcesso">Número de Processo</param>
         /// <param name="userParameters">Parâmetros de Usuário</param>
@@ -84,7 +85,7 @@ namespace BipbopNet.Juristek
                 {
                     if (field.Required || field.MainField)
                         throw new QueryException($"O parâmetro '{field.Name}' não foi preenchido",
-                            code: (int) Exception.Codes.MissingArgument, push: true, @from: Table);
+                            code: (int) Exception.Codes.MissingArgument, push: true, from: Table);
 
                     continue;
                 }
@@ -92,7 +93,7 @@ namespace BipbopNet.Juristek
                 if (field.Select && field.Options.All(p => p.Value != parameter.Value))
                     throw new QueryException(
                         $"O parâmetro '{field.Name}' não foi preenchido com uma opção válida",
-                        code: (int) Exception.Codes.InvalidArgument, push: true, @from: Table);
+                        code: (int) Exception.Codes.InvalidArgument, push: true, from: Table);
             }
         }
 
@@ -102,7 +103,7 @@ namespace BipbopNet.Juristek
         }
 
         /// <summary>
-        /// Cria um QUERY
+        ///     Cria um QUERY
         /// </summary>
         /// <returns>Query</returns>
         public override string ToString()

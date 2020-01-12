@@ -3,7 +3,7 @@ using System.Xml;
 namespace BipbopNet.Parser
 {
     /// <summary>
-    /// Tag do Processo
+    ///     Tag do Processo
     /// </summary>
     public class Tag
     {
@@ -15,17 +15,17 @@ namespace BipbopNet.Parser
         }
 
         /// <summary>
-        /// Data da Tag
+        ///     Data da Tag
         /// </summary>
         public string Data => _tagNode.Attributes?["data"]?.Value;
-        
+
         /// <summary>
-        /// Tipo da Tag
+        ///     Tipo da Tag
         /// </summary>
         public string Tipo => _tagNode.Attributes?["tipo"]?.Value;
 
         /// <summary>
-        /// Valor da TAG
+        ///     Valor da TAG
         /// </summary>
         /// <returns>Valor da TAG</returns>
         public override string ToString()

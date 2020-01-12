@@ -1,7 +1,7 @@
 namespace BipbopNet.Parser
 {
     /// <summary>
-    /// Portal de Informações
+    ///     Portal de Informações
     /// </summary>
     public class Database : TargetDescription
     {

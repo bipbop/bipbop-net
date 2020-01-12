@@ -11,7 +11,7 @@ namespace BipbopNet.Push
     using Handler = Func<HttpListenerContext, HttpListenerResponse, byte[]>;
 
     /// <summary>
-    /// Escuta por Trabalhos da BIPBOP
+    ///     Escuta por Trabalhos da BIPBOP
     /// </summary>
     public class Listener
     {
@@ -22,14 +22,14 @@ namespace BipbopNet.Push
         private readonly string _token = _generateToken();
 
         /// <summary>
-        /// Porta onde o servidor HTTP escuta
+        ///     Porta onde o servidor HTTP escuta
         /// </summary>
         public readonly int Port;
 
         private bool _runServer;
 
         /// <summary>
-        /// Escuta por Trabalhos da BIPBOP
+        ///     Escuta por Trabalhos da BIPBOP
         /// </summary>
         public Listener(int? userPort = null)
         {
@@ -41,12 +41,12 @@ namespace BipbopNet.Push
         private static int DefaultPort => EnvironmentPort();
 
         /// <summary>
-        /// IP do Servidor na Internet
+        ///     IP do Servidor na Internet
         /// </summary>
         public static Task<string> Ip => LazyIpResponse.Value;
 
         /// <summary>
-        /// Endereço do Servidor na Internet (terá de ser feito NAT)
+        ///     Endereço do Servidor na Internet (terá de ser feito NAT)
         /// </summary>
         /// <value>Endereço do Servidor</value>
         public Task<string> ServerAddr => GenerateServerAddr(Port);
@@ -59,7 +59,7 @@ namespace BipbopNet.Push
         }
 
         /// <summary>
-        /// Inicia o Servidor
+        ///     Inicia o Servidor
         /// </summary>
         public async Task Start(bool validateServerAddr = true, int timeout = 30)
         {
@@ -101,7 +101,7 @@ namespace BipbopNet.Push
         }
 
         /// <summary>
-        /// Escuta por Eventos
+        ///     Escuta por Eventos
         /// </summary>
         /// <code>
         /// var listener = new Listener();
@@ -112,7 +112,7 @@ namespace BipbopNet.Push
 
 
         /// <summary>
-        /// Endereço do Servidor
+        ///     Endereço do Servidor
         /// </summary>
         /// <param name="port">Porta do Servidor</param>
         /// <returns></returns>
@@ -123,7 +123,7 @@ namespace BipbopNet.Push
             var ipResponse = await Ip;
             return $"http://{ipResponse}:{port ?? DefaultPort}/";
         }
-        
+
         private async Task TokenRequest(int timeout = 30)
         {
             var httpClient = new HttpClient {Timeout = TimeSpan.FromSeconds(timeout)};
@@ -133,7 +133,7 @@ namespace BipbopNet.Push
         }
 
         /// <summary>
-        /// Resposta do IP
+        ///     Resposta do IP
         /// </summary>
         /// <returns></returns>
         private static async Task<string> IpResponse(int timeout = 30)
@@ -145,7 +145,7 @@ namespace BipbopNet.Push
         }
 
         /// <summary>
-        /// Para o Servidor Assíncrono
+        ///     Para o Servidor Assíncrono
         /// </summary>
         /// <returns>Promessa</returns>
         public Task Stop()
@@ -154,7 +154,7 @@ namespace BipbopNet.Push
         }
 
         /// <summary>
-        /// Para o Servidor
+        ///     Para o Servidor
         /// </summary>
         public void StopSync()
         {
@@ -179,14 +179,15 @@ namespace BipbopNet.Push
         }
 
         /// <summary>
-        /// Captura as Conexões do HTTP para Gerar Eventos
+        ///     Captura as Conexões do HTTP para Gerar Eventos
         /// </summary>
         public void HandleConnections()
         {
             HandleConnections(null);
         }
 
-        private void HandleConnections(Handler handler = null, Func<bool> continueCallback = null, ManualResetEvent reset = null)
+        private void HandleConnections(Handler handler = null, Func<bool> continueCallback = null,
+            ManualResetEvent reset = null)
         {
             _handleMutex.WaitOne();
             try
@@ -201,7 +202,6 @@ namespace BipbopNet.Push
             {
                 _handleMutex.ReleaseMutex();
             }
-
         }
 
         private void HandleConnection(Handler userHandler = null)
@@ -236,7 +236,7 @@ namespace BipbopNet.Push
         }
 
         /// <summary>
-        /// Captura as conexões do HTTP para gerar eventos
+        ///     Captura as conexões do HTTP para gerar eventos
         /// </summary>
         /// <returns>Promessa</returns>
         public Task HandleConnectionsAsync()
@@ -244,7 +244,8 @@ namespace BipbopNet.Push
             return HandleConnectionsAsync(null);
         }
 
-        private Task HandleConnectionsAsync(Handler userHandler = null, Func<bool> continueCallback = null, ManualResetEvent reset = null)
+        private Task HandleConnectionsAsync(Handler userHandler = null, Func<bool> continueCallback = null,
+            ManualResetEvent reset = null)
         {
             return Task.Run(() => HandleConnections(userHandler, continueCallback, reset));
         }

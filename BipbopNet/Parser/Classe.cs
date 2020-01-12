@@ -3,17 +3,17 @@ using System.Xml;
 namespace BipbopNet.Parser
 {
     /// <summary>
-    /// Classe do Processo
+    ///     Classe do Processo
     /// </summary>
     public class Classe
     {
         /// <summary>
-        /// Sigla CNJ
+        ///     Sigla CNJ
         /// </summary>
         public readonly string Sigla;
-        
+
         /// <summary>
-        /// Classe
+        ///     Classe
         /// </summary>
         public readonly string Value;
 

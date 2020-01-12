@@ -1,29 +1,32 @@
+using System;
+
 namespace BipbopNet.Push
 {
-    public class ListParameters: PushIdentifier
+    [Serializable]
+    public class ListParameters : JobIdentifier
     {
         /// <summary>
-        /// Recebe apenas PUSH com a TAG
-        /// </summary>
-        public string Tag;
-        
-        /// <summary>
-        /// PUSH com ID maior que
+        ///     PUSH com ID maior que
         /// </summary>
         public string LastId;
-        
+
         /// <summary>
-        /// Pula X resultados
-        /// </summary>
-        public int Skip = 0;
-        
-        /// <summary>
-        /// Quantidade Máxima de Resultados
+        ///     Quantidade Máxima de Resultados
         /// </summary>
         public int Limit = 10;
-        
+
         /// <summary>
-        /// Número da versão desejada
+        ///     Pula X resultados
+        /// </summary>
+        public int Skip = 0;
+
+        /// <summary>
+        ///     Recebe apenas PUSH com a TAG
+        /// </summary>
+        public string Tag;
+
+        /// <summary>
+        ///     Número da versão desejada
         /// </summary>
         public int? Version;
     }

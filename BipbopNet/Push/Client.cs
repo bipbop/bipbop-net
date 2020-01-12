@@ -8,93 +8,93 @@ using BipbopNet.Parser;
 namespace BipbopNet.Push
 {
     /// <summary>
-    /// Agendamento de Trabalho BIPBOP
+    ///     Agendamento de Trabalho BIPBOP
     /// </summary>
     /// <code>
     /// var client = new Client();
     /// var pushClient = new Push.Client(new Client());
-    /// 
     /// </code>
+    [Serializable]
     public class Client
     {
         /// <summary>
-        /// Cliente da API
+        ///     Cliente da API
         /// </summary>
         public readonly BipbopNet.Client BipbopClient;
 
         /// <summary>
-        /// Gerenciador de Carga
+        ///     Gerenciador de Carga
         /// </summary>
         public readonly Manager Manager;
 
         /// <summary>
-        /// Cliente de Agendamento de Trabalho BIPBOP
+        ///     Cliente de Agendamento de Trabalho BIPBOP
         /// </summary>
         /// <param name="bipbopClient">Cliente da API</param>
         /// <param name="manager">Gerenciador de Carga</param>
-        public Client(BipbopNet.Client bipbopClient, Manager manager = null)
+        public Client(BipbopNet.Client bipbopClient = null, Manager manager = null)
         {
             Manager = manager ?? Manager.Default;
-            BipbopClient = bipbopClient;
+            BipbopClient = bipbopClient ?? new BipbopNet.Client();
         }
 
         /// <summary>
-        /// Recupera um Documento
+        ///     Recupera um Documento
         /// </summary>
         /// <param name="id">Identificador</param>
         /// <returns>Documento</returns>
-        public async Task<BipbopDocument> Document(PushIdentifier id)
+        public async Task<BipbopDocument> Document(JobIdentifier id)
         {
             return await RequestPush($"SELECT FROM '{Manager}'.'DOCUMENT'", id);
         }
 
         /// <summary>
-        /// Recupera um Documento Deletado 
+        ///     Recupera um Documento Deletado
         /// </summary>
         /// <param name="id">Identificador</param>
         /// <returns>Documento</returns>
-        public async Task<BipbopDocument> DeletedDocument(PushIdentifier id)
+        public async Task<BipbopDocument> DeletedDocument(JobIdentifier id)
         {
             return await RequestPush($"SELECT FROM '{Manager}'.'DELETEDDOCUMENT'", id);
         }
 
         /// <summary>
-        /// Deleta um Trabalho 
+        ///     Deleta um Trabalho
         /// </summary>
         /// <param name="id">Identificador</param>
-        public async Task Delete(PushIdentifier id)
+        public async Task Delete(JobIdentifier id)
         {
             await RequestPush($"DELETE FROM '{Manager}'.'JOB'", id);
         }
 
         /// <summary>
-        /// Retorna o Status de um Trabalho Deletado
+        ///     Retorna o Status de um Trabalho Deletado
         /// </summary>
         /// <param name="configuration">Identificador</param>
         /// <returns>Status do Trabalho</returns>
-        public Task<PushStatus> DeletedStatus(PushIdentifier configuration)
+        public Task<Status> DeletedStatus(JobIdentifier configuration)
         {
             return AbstractStatus("DELETEDJOB", configuration);
         }
 
         /// <summary>
-        /// Retorna o Status de um Trabalho
+        ///     Retorna o Status de um Trabalho
         /// </summary>
         /// <param name="configuration">Identificador</param>
         /// <returns>Status do Trabalho</returns>
-        public Task<PushStatus> Status(PushIdentifier configuration)
+        public Task<Status> Status(JobIdentifier configuration)
         {
             return AbstractStatus("JOB", configuration);
         }
 
-        private async Task<PushStatus> AbstractStatus(string target, PushIdentifier configuration)
+        private async Task<Status> AbstractStatus(string target, JobIdentifier configuration)
         {
             var doc = await RequestPush($"SELECT FROM '{Manager}'.'{target}'", configuration);
             var pushObject = doc.Document.SelectSingleNode("/BPQL/body/pushObject");
             return pushObject == null ? null : ParsePushObject(pushObject);
         }
 
-        private async Task<BipbopDocument> RequestPush(string query, PushIdentifier configuration)
+        private async Task<BipbopDocument> RequestPush(string query, JobIdentifier configuration)
         {
             var requestParameter = new List<KeyValuePair<string, string>>();
 
@@ -119,11 +119,11 @@ namespace BipbopNet.Push
             return DateTime.Parse(value);
         }
 
-        private PushStatus ParsePushObject(XmlNode selectSingleNode)
+        private Status ParsePushObject(XmlNode selectSingleNode)
         {
-            return new PushStatus
+            return new Status
             {
-                Push = new PushIdentifier
+                Job = new JobIdentifier
                 {
                     Id = selectSingleNode.SelectSingleNode("./id")?.InnerText,
                     Label = selectSingleNode.SelectSingleNode("./label")?.InnerText
@@ -153,13 +153,13 @@ namespace BipbopNet.Push
         }
 
         /// <summary>
-        /// Cria um Trabalho
+        ///     Cria um Trabalho
         /// </summary>
         /// <param name="userConfiguration">Trabalho</param>
         /// <returns>Trabalho</returns>
-        public async Task<PushConfiguration> Create(PushConfiguration userConfiguration)
+        public async Task<Configuration> Create(Configuration userConfiguration)
         {
-            var configuration = (PushConfiguration) userConfiguration.Clone();
+            var configuration = (Configuration) userConfiguration.Clone();
             var sendParameters = KeyValuePairs(configuration);
             var doc = await BipbopClient.Request($"INSERT INTO '{Manager}'.'JOB'", sendParameters.ToList());
             configuration.Id = doc.Document.SelectSingleNode("/BPQL/body/id")?.InnerText;
@@ -167,11 +167,11 @@ namespace BipbopNet.Push
         }
 
         /// <summary>
-        /// Atualiza os Parâmetros de um Trabalho
+        ///     Atualiza os Parâmetros de um Trabalho
         /// </summary>
         /// <param name="configuration">Parâmetros de Trabalho</param>
         /// <returns>Trabalho</returns>
-        public async Task<PushStatus> Update(PushConfiguration configuration)
+        public async Task<Status> Update(Configuration configuration)
         {
             var sendParameters = KeyValuePairs(configuration);
             var doc = await BipbopClient.Request($"UPDATE '{Manager}'.'JOB'", sendParameters.ToList());
@@ -179,26 +179,26 @@ namespace BipbopNet.Push
         }
 
         /// <summary>
-        /// Lista os Trabalhos
+        ///     Lista os Trabalhos
         /// </summary>
         /// <param name="listParameters">Filtro</param>
         /// <returns>Trabalhos</returns>
-        public Task<PushStatus[]> List(ListParameters listParameters)
+        public Task<StatusList> List(ListParameters listParameters)
         {
             return PushStatuses(listParameters, "JOB");
         }
 
         /// <summary>
-        /// Lista os Trabalhos Deletados
+        ///     Lista os Trabalhos Deletados
         /// </summary>
         /// <param name="listParameters">Filtro</param>
         /// <returns>Trabalhos</returns>
-        public Task<PushStatus[]> DeletedList(ListParameters listParameters)
+        public Task<StatusList> DeletedList(ListParameters listParameters)
         {
             return PushStatuses(listParameters, "DELETEDJOB");
         }
 
-        private async Task<PushStatus[]> PushStatuses(ListParameters listParameters, string target)
+        private async Task<StatusList> PushStatuses(ListParameters listParameters, string target)
         {
             var filter = new List<KeyValuePair<string, string>>
             {
@@ -207,10 +207,9 @@ namespace BipbopNet.Push
             };
             if (listParameters.LastId != null)
                 filter.Add(new KeyValuePair<string, string>("LastId", listParameters.LastId));
+
             if (listParameters.Version != null)
                 filter.Add(new KeyValuePair<string, string>("Version", listParameters.Version.ToString()));
-            if (listParameters.Tag != null)
-                filter.Add(new KeyValuePair<string, string>("tag", listParameters.Tag));
 
             if (listParameters.Tag != null)
                 filter.Add(new KeyValuePair<string, string>("tag", listParameters.Tag));
@@ -222,12 +221,22 @@ namespace BipbopNet.Push
                 filter.Add(new KeyValuePair<string, string>("Label", listParameters.Tag));
 
             var doc = await BipbopClient.Request($"SELECT FROM '{Manager}'.'{target}'", filter);
-            return (from XmlNode i in doc.Document.SelectNodes("/BPQL/body/pushObject") select ParsePushObject(i))
+            var statusList = (from XmlNode i in doc.Document.SelectNodes("/BPQL/body/pushObject")
+                    select ParsePushObject(i))
                 .ToArray();
+
+            var limitNode = doc.Document.SelectSingleNode("/BPQL/body/limit");
+            var skipNode = doc.Document.SelectSingleNode("/BPQL/body/skip");
+            var totalNode = doc.Document.SelectSingleNode("/BPQL/body/total");
+
+            return new StatusList(
+                limitNode != null ? int.Parse(limitNode.InnerText) : 0,
+                skipNode != null ? int.Parse(skipNode.InnerText) : 0,
+                totalNode != null ? int.Parse(totalNode.InnerText) : 0,
+                statusList);
         }
 
-
-        private static IEnumerable<KeyValuePair<string, string>> KeyValuePairs(PushConfiguration configuration)
+        private static IEnumerable<KeyValuePair<string, string>> KeyValuePairs(Configuration configuration)
         {
             var requestParameter = new List<KeyValuePair<string, string>>();
 

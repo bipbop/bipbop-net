@@ -4,16 +4,24 @@
     <e p="$APPLICATION_CONFIG_DIR$/scratches" t="IncludeRecursive" />
     <e p="$USER_HOME$/.Rider2019.3/system/extResources" t="IncludeRecursive" />
     <e p="$USER_HOME$/.Rider2019.3/system/resharper-host/local/Transient/ReSharperHost/v193/SolutionCaches/_BipbopNet.1275140951.00" t="ExcludeRecursive" />
+    <e p="$USER_HOME$/.nuget/packages/microsoft.net.test.sdk/16.2.0/build/netcoreapp1.0" t="Include">
+      <e p="Microsoft.NET.Test.Sdk.Program.cs" t="Include" />
+    </e>
     <e p="$USER_HOME$/.nuget/packages/nunit3testadapter/3.15.1/build/net35/NUnit3.TestAdapter.dll" t="Include" />
     <e p="$USER_HOME$/.nuget/packages/nunit3testadapter/3.15.1/build/net35/NUnit3.TestAdapter.pdb" t="Include" />
     <e p="$USER_HOME$/.nuget/packages/nunit3testadapter/3.15.1/build/net35/nunit.engine.api.dll" t="Include" />
     <e p="$USER_HOME$/.nuget/packages/nunit3testadapter/3.15.1/build/net35/nunit.engine.dll" t="Include" />
+    <e p="$USER_HOME$/.nuget/packages/nunit3testadapter/3.15.1/build/netcoreapp2.0/NUnit3.TestAdapter.dll" t="Include" />
+    <e p="$USER_HOME$/.nuget/packages/nunit3testadapter/3.15.1/build/netcoreapp2.0/NUnit3.TestAdapter.pdb" t="Include" />
+    <e p="$USER_HOME$/.nuget/packages/nunit3testadapter/3.15.1/build/netcoreapp2.0/nunit.engine.api.dll" t="Include" />
+    <e p="$USER_HOME$/.nuget/packages/nunit3testadapter/3.15.1/build/netcoreapp2.0/nunit.engine.dll" t="Include" />
     <e p="$PROJECT_DIR$" t="IncludeFlat">
       <e p="BipbopNet" t="IncludeRecursive">
         <e p="BipbopNet.csproj" t="IncludeRecursive" />
         <e p="Client.cs" t="Include" />
         <e p="Juristek" t="Include">
           <e p="Client.cs" t="Include" />
+          <e p="OABParameters.cs" t="Include" />
           <e p="Query.cs" t="Include" />
           <e p="QueryException.cs" t="Include" />
           <e p="TipoInscricao.cs" t="Include" />
@@ -22,6 +30,7 @@
           <e p="Advogado.cs" t="Include" />
           <e p="Andamento.cs" t="Include" />
           <e p="BipbopDocument.cs" t="Include" />
+          <e p="BipbopResponse.cs" t="Include" />
           <e p="Classe.cs" t="Include" />
           <e p="Comarca.cs" t="Include" />
           <e p="CourtDate.cs" t="Include" />
@@ -38,7 +47,7 @@
           <e p="NextAppointment.cs" t="Include" />
           <e p="OabAdvogado.cs" t="Include" />
           <e p="OabConsulta.cs" t="Include" />
-          <e p="OabPush.cs" t="Include" />
+          <e p="OabJob.cs" t="Include" />
           <e p="Orgao.cs" t="Include" />
           <e p="Parte.cs" t="Include" />
           <e p="Processo.cs" t="Include" />
@@ -53,15 +62,16 @@
         </e>
         <e p="Push" t="Include">
           <e p="Client.cs" t="Include" />
+          <e p="Configuration.cs" t="Include" />
+          <e p="JobIdentifier.cs" t="Include" />
           <e p="ListParameters.cs" t="Include" />
           <e p="Listener.cs" t="Include" />
           <e p="ListenerEvent.cs" t="Include" />
           <e p="Manager.cs" t="Include" />
-          <e p="PushConfiguration.cs" t="Include" />
-          <e p="PushIdentifier.cs" t="Include" />
-          <e p="PushStatus.cs" t="Include" />
+          <e p="Progress.cs" t="Include" />
+          <e p="Status.cs" t="Include" />
+          <e p="StatusList.cs" t="Include" />
         </e>
-        <e p="WebSocket.cs" t="Include" />
         <e p="bin" t="ExcludeRecursive" />
         <e p="obj" t="ExcludeRecursive">
           <e p="Debug" t="Include">
@@ -79,6 +89,12 @@
         <e p="bin" t="ExcludeRecursive" />
         <e p="obj" t="ExcludeRecursive">
           <e p="Debug" t="Include">
+            <e p="netcoreapp2.2" t="Include">
+              <e p="BipbopNet.Tests.AssemblyInfo.cs" t="Include" />
+            </e>
+            <e p="netcoreapp3.1" t="Include">
+              <e p="BipbopNet.Tests.AssemblyInfo.cs" t="Include" />
+            </e>
             <e p="netstandard2.0" t="Include">
               <e p="BipbopNet.Tests.AssemblyInfo.cs" t="Include" />
             </e>

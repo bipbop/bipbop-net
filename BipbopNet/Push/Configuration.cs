@@ -4,96 +4,97 @@ using BipbopNet.Parser;
 
 namespace BipbopNet.Push
 {
-    public class PushConfiguration : PushIdentifier, ICloneable
+    [Serializable]
+    public class Configuration : JobIdentifier, ICloneable
     {
         /// <summary>
-        /// Momento da primeira execução
+        ///     Momento da primeira execução
         /// </summary>
         public DateTime? At;
-        
+
         /// <summary>
-        /// Callback onde será enviado o documento quando concluído
+        ///     Callback onde será enviado o documento quando concluído
         /// </summary>
         public string Callback;
-        
+
         /// <summary>
-        /// Tempo de vida máximo do documento
+        ///     Tempo de vida máximo do documento
         /// </summary>
         public DateTime? Expire;
-        
+
         /// <summary>
-        /// Intervalo de execuções em segundos
+        ///     Intervalo de execuções em segundos
         /// </summary>
         public int? Interval;
-        
+
         /// <summary>
-        /// Versão máxima
+        ///     Versão máxima
         /// </summary>
         public int? MaxVersion;
-        
+
         /// <summary>
-        /// Parâmetros de Consulta
+        ///     Parâmetros de Consulta
         /// </summary>
         public IEnumerable<KeyValuePair<string, string>> Parameters;
-        
+
         /// <summary>
-        /// Prioridade, quanto menor, melhor.
+        ///     Prioridade, quanto menor, melhor.
         /// </summary>
         public int? Priority;
-        
+
         /// <summary>
-        /// Consulta
+        ///     Consulta
         /// </summary>
         public string Query;
-        
+
         /// <summary>
-        /// Tempo entre tentativas mal-sucedidas em segundos
+        ///     Tempo entre tentativas mal-sucedidas em segundos
         /// </summary>
         public int? RetryIn;
-        
+
         /// <summary>
-        /// Tags do PUSH
+        ///     Tags do PUSH
         /// </summary>
         public List<string> Tags;
-        
+
         /// <summary>
-        /// Entrega via WebSocket?
+        ///     Entrega via WebSocket?
         /// </summary>
         public bool? WebSocketDeliver = true;
 
+        public object Clone()
+        {
+            return MemberwiseClone();
+        }
+
         /// <summary>
-        /// Cria as configurações de um PUSH com uma query e parâmetros.
+        ///     Cria as configurações de um PUSH com uma query e parâmetros.
         /// </summary>
         /// <param name="query">Query</param>
         /// <param name="parameters">Parâmetros</param>
         /// <returns>Trabalho</returns>
-        public static PushConfiguration factory(string query, IEnumerable<KeyValuePair<string, string>> parameters = null)
+        public static Configuration factory(string query, IEnumerable<KeyValuePair<string, string>> parameters = null)
         {
-            return new PushConfiguration
+            return new Configuration
             {
                 Query = query,
-                Parameters = parameters,
+                Parameters = parameters
             };
         }
-        
+
         /// <summary>
-        /// Cria as configurações de um PUSH com uma query e parâmetros.
+        ///     Cria as configurações de um PUSH com uma query e parâmetros.
         /// </summary>
         /// <param name="table">Tabela</param>
         /// <param name="parameters">Parâmetros</param>
         /// <returns>Trabalho</returns>
-        public static PushConfiguration factory(Table table, IEnumerable<KeyValuePair<string, string>> parameters = null)
+        public static Configuration factory(Table table, IEnumerable<KeyValuePair<string, string>> parameters = null)
         {
-            return new PushConfiguration
+            return new Configuration
             {
                 Query = table.SelectString(),
-                Parameters = parameters,
+                Parameters = parameters
             };
-        }
-        
-        public object Clone()
-        {
-            return MemberwiseClone();
         }
     }
 }

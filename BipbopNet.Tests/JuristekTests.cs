@@ -19,17 +19,33 @@ namespace BipbopNet.Tests
         [Test]
         public async Task PushListTest()
         {
-            var list = await JuristekClient.Push.List(new ListParameters());
-            foreach (var i in list) Console.WriteLine(i);
+            var listParameters = new ListParameters();
+            var list = await JuristekClient.Push.List(listParameters);
+            foreach (var i in list.Items) Console.WriteLine(i);
         }
 
         [Test]
         public async Task OabTest()
         {
-            var oab = await JuristekClient.OabProcesso("60438-PR", new Uri(await Listener.GenerateServerAddr()));
-            foreach (var oabPush in oab.Pushes) Assert.IsNotNull(await JuristekClient.Push.Status(oabPush));
+            var uniq = Guid.NewGuid().ToString("N");
 
-            Assert.IsNotEmpty(oab.Advogados.ToList());
+            var oabParameters = new OABParameters("312375")
+            {
+                Estado = Juristek.Client.Estado.SP,
+                OrigemOab = Juristek.Client.Estado.SP,
+                TipoInscricao = TipoInscricao.Advogado,
+                WebSocket = true,
+                Marker = uniq,
+                Label = uniq
+            };
+
+            var oab = await JuristekClient.OabProcesso(oabParameters);
+            await JuristekClient.WebSocket.Start();
+
+
+            var documents = JuristekClient.WebSocket.WaitPush(oab, timeout: 60);
+            var progress = new Progress(JuristekClient.Push, uniq);
+            Console.WriteLine(await progress.calculate());
         }
 
         [Test]
@@ -40,7 +56,7 @@ namespace BipbopNet.Tests
 
             var cnjQuery = Query.Cnj("0016306-32.2019.8.26.0502");
             var pushConfiguration = await JuristekClient.Push.Create(Juristek.Client.CreatePushConfiguration(cnjQuery,
-                new PushConfiguration
+                new Configuration
                 {
                     MaxVersion = 1,
                     Expire = DateTime.Now.AddMinutes(30),
@@ -49,7 +65,7 @@ namespace BipbopNet.Tests
 
             listener.OnRequest += (sender, args) =>
             {
-                if (args.Push.Id != pushConfiguration.Id) return;
+                if (args.Job.Id != pushConfiguration.Id) return;
                 listener.Stop();
             };
 
@@ -69,25 +85,25 @@ namespace BipbopNet.Tests
         public async Task PushTest()
         {
             var cnjQuery = Query.Cnj("0016306-32.2019.8.26.0502");
-            var webSocket = new WebSocket(JuristekClient.BipbopClient);
+            var webSocket = JuristekClient.BipbopClient.WebSocket;
             await webSocket.Start();
 
             var pushConfiguration = await JuristekClient.Push.Create(Juristek.Client.CreatePushConfiguration(cnjQuery,
-                new PushConfiguration
+                new Configuration
                 {
                     MaxVersion = 1,
                     At = DateTime.Now.AddMinutes(1), /* Tempo para conectar o WebSocket */
-                    Expire = DateTime.Now.AddMinutes(30),
+                    Expire = DateTime.Now.AddMinutes(30)
                 }));
             Assert.IsNotEmpty(pushConfiguration.Id);
             var pushStatus = await JuristekClient.Push.Status(pushConfiguration);
 
-            Assert.AreEqual(pushStatus.Push.Id, pushConfiguration.Id);
-            Assert.IsNotEmpty(pushStatus.Push.Label);
-            var document = await webSocket.WaitPush(pushStatus.Push);
+            Assert.AreEqual(pushStatus.Job.Id, pushConfiguration.Id);
+            Assert.IsNotEmpty(pushStatus.Job.Label);
+            var document = await webSocket.WaitPush(pushStatus.Job);
             Assert.IsNotNull(document);
-            Assert.IsNotEmpty(new Processos(document.Document).Retrieve);
-            var pushDocument = await JuristekClient.Push.Document(pushStatus.Push);
+            Assert.IsNotEmpty(new Processos(document.Response.Document).Retrieve);
+            var pushDocument = await JuristekClient.Push.Document(pushStatus.Job);
             Assert.IsNotNull(pushDocument);
             Assert.IsNotEmpty(new Processos(pushDocument.Document).Retrieve);
         }
@@ -97,7 +113,7 @@ namespace BipbopNet.Tests
         {
             var cnjQuery = Query.Cnj("0016306-32.2019.8.26.0502");
             var pushConfiguration = await JuristekClient.Push.Create(Juristek.Client.CreatePushConfiguration(cnjQuery,
-                new PushConfiguration
+                new Configuration
                 {
                     MaxVersion = 1,
                     At = DateTime.Now.AddMinutes(1), /* Tempo para conectar o WebSocket */
@@ -109,7 +125,7 @@ namespace BipbopNet.Tests
                 }));
             Assert.IsNotEmpty(pushConfiguration.Id);
             var pushStatus = await JuristekClient.Push.Status(pushConfiguration);
-            Assert.AreEqual(pushStatus.Push.Id, pushConfiguration.Id);
+            Assert.AreEqual(pushStatus.Job.Id, pushConfiguration.Id);
             await JuristekClient.Push.Delete(pushConfiguration);
         }
 

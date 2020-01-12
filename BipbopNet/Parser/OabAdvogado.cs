@@ -13,67 +13,67 @@ namespace BipbopNet.Parser
         }
 
         /// <summary>
-        /// Nome do Advogado
+        ///     Nome do Advogado
         /// </summary>
         public string Nome => _adv["Nome"]?.ToString();
-        
+
         /// <summary>
-        /// Inscrição na OAB
+        ///     Inscrição na OAB
         /// </summary>
         public string Inscricao => _adv["Inscricao"]?.ToString();
-        
+
         /// <summary>
-        /// Estado do Advogado
+        ///     Estado do Advogado
         /// </summary>
         public string Uf => _adv["Uf"]?.ToString();
-        
+
         /// <summary>
-        /// Tipo de Inscrição do Advogado
+        ///     Tipo de Inscrição do Advogado
         /// </summary>
         public string TipoInscricao => _adv["TipoInscricao"]?.ToString();
-        
+
         /// <summary>
-        /// Endereço do Advogado
+        ///     Endereço do Advogado
         /// </summary>
         public string Endereco => _adv["Endereco"]?.ToString();
-        
+
         /// <summary>
-        /// Organização do Advogado
+        ///     Organização do Advogado
         /// </summary>
         public string Organizacao => _adv["Organizacao"]?.ToString();
-        
+
         /// <summary>
-        /// Telefones do Advogado
+        ///     Telefones do Advogado
         /// </summary>
         public string Telefones => _adv["Telefones"]?.ToString();
-        
+
         /// <summary>
-        /// Situação do Advogado
+        ///     Situação do Advogado
         /// </summary>
         public string Situacao => _adv["Situacao"]?.ToString();
-        
+
         /// <summary>
-        /// Foto do Advogado em base64
+        ///     Foto do Advogado em base64
         /// </summary>
         public string Foto => _adv["Foto"]?.ToString();
-        
+
         /// <summary>
-        /// Email do Advogado Criptografado
+        ///     Email do Advogado Criptografado
         /// </summary>
         public string Email => _adv["Email"]?.ToString();
-        
+
         /// <summary>
-        /// Permite enviar e-mail?
+        ///     Permite enviar e-mail?
         /// </summary>
         public bool PermiteEnviarEmail => _adv["PermiteEnviarEmail"].ToString() == "True";
-        
+
         /// <summary>
-        /// Publica Endereço?
+        ///     Publica Endereço?
         /// </summary>
         public bool PublicaEndereco => _adv["PublicaEndereco"]?.ToString() == "True";
-        
+
         /// <summary>
-        /// Publica Foto?
+        ///     Publica Foto?
         /// </summary>
         public bool PublicaFoto => _adv["PublicaFoto"].ToString() == "True";
     }
