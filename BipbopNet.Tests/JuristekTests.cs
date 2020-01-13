@@ -36,7 +36,8 @@ namespace BipbopNet.Tests
                 TipoInscricao = TipoInscricao.Advogado,
                 WebSocket = true,
                 Marker = uniq,
-                Label = uniq
+                Label = uniq,
+                Callback = await Listener.GenerateServerAddr(),
             };
 
             var oab = await JuristekClient.OabProcesso(oabParameters);

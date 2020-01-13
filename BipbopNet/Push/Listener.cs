@@ -49,7 +49,7 @@ namespace BipbopNet.Push
         ///     Endereço do Servidor na Internet (terá de ser feito NAT)
         /// </summary>
         /// <value>Endereço do Servidor</value>
-        public Task<string> ServerAddr => GenerateServerAddr(Port);
+        public Task<Uri> ServerAddr => GenerateServerAddr(Port);
 
         private static string _generateToken(int length = 64)
         {
@@ -116,12 +116,12 @@ namespace BipbopNet.Push
         /// </summary>
         /// <param name="port">Porta do Servidor</param>
         /// <returns></returns>
-        public static async Task<string> GenerateServerAddr(int? port = null)
+        public static async Task<Uri> GenerateServerAddr(int? port = null)
         {
             var envData = Environment.GetEnvironmentVariable("BIPBOP_SERVER");
-            if (envData != null) return envData;
+            if (envData != null) return new Uri(envData);
             var ipResponse = await Ip;
-            return $"http://{ipResponse}:{port ?? DefaultPort}/";
+            return new Uri($"http://{ipResponse}:{port ?? DefaultPort}/");
         }
 
         private async Task TokenRequest(int timeout = 30)

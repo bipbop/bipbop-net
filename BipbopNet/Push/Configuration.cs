@@ -15,7 +15,7 @@ namespace BipbopNet.Push
         /// <summary>
         ///     Callback onde será enviado o documento quando concluído
         /// </summary>
-        public string Callback;
+        public Uri Callback;
 
         /// <summary>
         ///     Tempo de vida máximo do documento

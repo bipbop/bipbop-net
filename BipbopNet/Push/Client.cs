@@ -241,7 +241,7 @@ namespace BipbopNet.Push
             var requestParameter = new List<KeyValuePair<string, string>>();
 
             if (configuration.Callback != null)
-                requestParameter.Add(new KeyValuePair<string, string>("pushCallback", configuration.Callback));
+                requestParameter.Add(new KeyValuePair<string, string>("pushCallback", configuration.Callback.ToString()));
             if (configuration.Query != null)
                 requestParameter.Add(new KeyValuePair<string, string>("pushQuery", configuration.Query));
             if (configuration.Tags != null)

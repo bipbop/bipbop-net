@@ -64,11 +64,22 @@ Assert.AreEqual(cnjQuery.ToString(),
 Feita necessáriamente com um CALLBACK HTTP.
 
 ```c#
-var JuristekClient = new Juristek.Client(new Client()));
-var listener = new Listener();
-await listener.Start();
+var uniq = Guid.NewGuid().ToString("N");
 
-var oab = await JuristekClient.OabProcesso("60438-PR", new Uri(await listener.ServerAddr));
+var oabParameters = new OABParameters("312375")
+{
+    Estado = Juristek.Client.Estado.SP,
+    OrigemOab = Juristek.Client.Estado.SP,
+    TipoInscricao = TipoInscricao.Advogado,
+    WebSocket = true,
+    Marker = uniq,
+    Label = uniq,
+    Callback = await listener.ServerAddr,
+};
+
+var oab = await JuristekClient.OabProcesso(oabParameters);
+await JuristekClient.WebSocket.Start();
+
 listener.OnRequest += (sender, args) => {
   if (args.Exception) {
     Console.WriteLine(args.ParserException);

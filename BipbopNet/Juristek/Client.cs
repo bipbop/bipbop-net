@@ -107,7 +107,7 @@ namespace BipbopNet.Juristek
             configuration.Query = "SELECT FROM 'JURISTEK'.'PUSH'";
             parameters.Add(new KeyValuePair<string, string>("data", query.ToString()));
             if (configuration.Callback != null)
-                parameters.Add(new KeyValuePair<string, string>("juristekCallback", configuration.Callback));
+                parameters.Add(new KeyValuePair<string, string>("juristekCallback", configuration.Callback.ToString()));
             configuration.Parameters = parameters;
             return configuration;
         }
