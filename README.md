@@ -51,7 +51,7 @@ Assert.IsNotEmpty(processos.Retrieve); // Retorna múltiplos processos pela nume
 
 #### Consulta CNJ
 
-É possível consultas através da numeração CNJ sem passar a fonte.
+É possível consultar através da numeração CNJ sem passar a fonte.
 
 ```c#
 var cnjQuery = Query.Cnj("0016306-32.2019.8.26.0502");
